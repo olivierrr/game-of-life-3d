@@ -48,6 +48,7 @@ function animate() {
 }
 
 function update() {
+	//updateParticles()
 	updateParticles2()
 	//Particle.new()
 }
@@ -71,7 +72,7 @@ function updateParticles() {
 			p2 = particles[j];
 
 			if(calcDistance(p1,p2) < 100) {
-				drawVector(p1,p2)
+				//drawVector(p1,p2)
 			}	
 		}
 	}
@@ -80,14 +81,25 @@ function updateParticles() {
 // applies velocity
 function updateParticles2() {
 
-	var p;
+	var p1;
 
 	for(var i=0; i<particles.length; i++) {
-		p = particles[i];
 
-		p.x += p.velocity.x;
-		p.y += p.velocity.y;
-		p.z += p.velocity.z;
+		p1 = particles[i];
+
+		p1.x += p1.velocity.x;
+		p1.y += p1.velocity.y;
+		p1.z += p1.velocity.z;
+
+		if(p1.x > 1000) p1.velocity.x = -Math.abs(p1.velocity.x)
+		if(p1.y > 1000) p1.velocity.y = -Math.abs(p1.velocity.y)
+		if(p1.z > 1000) p1.velocity.z = -Math.abs(p1.velocity.z)
+
+		if(p1.x < -1000) p1.velocity.x = Math.abs(p1.velocity.x)
+		if(p1.y < -1000) p1.velocity.y = Math.abs(p1.velocity.y)
+		if(p1.z < -1000) p1.velocity.z = Math.abs(p1.velocity.z)
+
+		//console.log(particles[69].velocity.x)
 	}
 }
 
@@ -109,4 +121,4 @@ function drawVector(p1,p2) {
     scene.add(line);
 }
 
-updateParticles()
+//updateParticles()
