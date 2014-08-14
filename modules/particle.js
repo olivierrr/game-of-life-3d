@@ -4,9 +4,10 @@ var particleSystem,
 	particleCount,
 	particles;
 
+// returns array of particles (vertices)
 module.exports.reset = function(scene){
 
-	particleCount = 100;
+	particleCount = 1000;
 	particles = new THREE.Geometry();
 
 	// create particles with random position values

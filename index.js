@@ -65,21 +65,23 @@ function updateParticles() {
 		for(var j=0; j<particles.length; j++) {
 			p2 = particles[j];
 
-			//console.log(calcDistance(p1,p2))
-			drawVector(p1,p2)
+			if(calcDistance(p1,p2) < 100) {
+				drawVector(p1,p2)
+			}
+			
 		}
 	}
 }
 
 function calcDistance(p1,p2) {
-	var o = ( (Math.pow((p1.x - p2.x),2)) + (Math.pow((p1.y - p1.y),2)) + (Math.pow((p1.z - p2.z),2)) );
+	var o = ( (Math.pow((p1.x - p2.x),2)) + (Math.pow((p1.y - p2.y),2)) + (Math.pow((p1.z - p2.z),2)) );
 	return Math.sqrt(o);
 }
 
+// should be single geometry with alphas
 function drawVector(p1,p2) {
-	var material = new THREE.LineBasicMaterial({
-        color: 0xFFFFFF	
-    });
+
+	var material = new THREE.LineBasicMaterial({ color: 0xFFFFFF });
 
 	var geometry = new THREE.Geometry();
     geometry.vertices.push(new THREE.Vector3(p1.x, p1.y, p1.z));
