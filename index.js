@@ -1,7 +1,6 @@
 var THREE = require('n3d-threejs')
 ,   OrbitControls = require('./modules/OrbitControls')(THREE)
 ,   AnimationFrame = require('animation-frame').shim()
-,   matrix_3d = require('matrix-3d')
 ,   Utils = require('./modules/utils')
 ,   Particle = require('./modules/particle')
 ,	Gui = require('./modules/gui').init()
