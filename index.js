@@ -28,6 +28,9 @@ function init() {
 
 	Dom.init(renderer, camera);
 	Gui.init();
+
+	//test
+	initVector()
 }
 
 //todo: bind to dat.gui
@@ -48,9 +51,8 @@ function animate() {
 }
 
 function update() {
-	//updateParticles()
+	updateParticles()
 	updateParticles2()
-	//Particle.new()
 }
 
 function render() {
@@ -58,11 +60,10 @@ function render() {
 	renderer.render( scene, camera );
 }
 
-//
 
 function updateParticles() {
 
-	var p1, p2;
+	var p1, p2, vectors = []
 
 	for(var i=0; i<particles.length; i++) {
 
@@ -71,11 +72,14 @@ function updateParticles() {
 		for(var j=0; j<particles.length; j++) {
 			p2 = particles[j];
 
-			if(calcDistance(p1,p2) < 100) {
-				//drawVector(p1,p2)
+			if(calcDistance(p1,p2) < 1) {
+				vectors.push(p1,p2)
 			}	
 		}
 	}
+
+	drawVectors(vectors)
+	vectors = [];
 }
 
 // applies velocity
@@ -91,15 +95,14 @@ function updateParticles2() {
 		p1.y += p1.velocity.y;
 		p1.z += p1.velocity.z;
 
-		if(p1.x > 1000) p1.velocity.x = -Math.abs(p1.velocity.x)
-		if(p1.y > 1000) p1.velocity.y = -Math.abs(p1.velocity.y)
-		if(p1.z > 1000) p1.velocity.z = -Math.abs(p1.velocity.z)
+		// bounce logic
+		if(p1.x > 500) p1.velocity.x = -Math.abs(p1.velocity.x)
+		if(p1.y > 500) p1.velocity.y = -Math.abs(p1.velocity.y)
+		if(p1.z > 500) p1.velocity.z = -Math.abs(p1.velocity.z)
+		if(p1.x < -500) p1.velocity.x = Math.abs(p1.velocity.x)
+		if(p1.y < -500) p1.velocity.y = Math.abs(p1.velocity.y)
+		if(p1.z < -500) p1.velocity.z = Math.abs(p1.velocity.z)
 
-		if(p1.x < -1000) p1.velocity.x = Math.abs(p1.velocity.x)
-		if(p1.y < -1000) p1.velocity.y = Math.abs(p1.velocity.y)
-		if(p1.z < -1000) p1.velocity.z = Math.abs(p1.velocity.z)
-
-		//console.log(particles[69].velocity.x)
 	}
 }
 
@@ -121,4 +124,33 @@ function drawVector(p1,p2) {
     scene.add(line);
 }
 
-//updateParticles()
+var geo, line;
+
+function initVector(){
+
+	var material = new THREE.LineBasicMaterial({ color: 0xFFFFFF });
+	geo = new THREE.Geometry();
+
+	for(var i=0; i<1000; i++) {
+		geo.vertices.push(new THREE.Vector3(i,i,i));
+	}
+	line = new THREE.Line(geo, material);
+
+    scene.add(line);
+
+    console.log(line)
+}
+
+// should be single geometry with alphas
+function drawVectors(vectors) {
+	for(var i=0; i<1000; i+=2) {
+
+		var p1 = vectors[i]
+		var p2 = vectors[i+1]
+
+		geo.vertices[i].set(p1.x, p1.y, p1.z)
+		geo.vertices[i+1].set(p2.x, p2.y, p2.z)
+
+	}
+	line.geometry.verticesNeedUpdate = true;
+}

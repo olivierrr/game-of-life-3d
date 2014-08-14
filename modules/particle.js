@@ -25,9 +25,9 @@ module.exports.reset = function(scene){
 
 var newParticle = function(){
 	var particle = new THREE.Vector3();
-	particle.x = Math.random() * 2000 - 1000;
-	particle.y = Math.random() * 2000 - 1000;
-	particle.z = Math.random() * 2000 - 1000;
+	particle.x = Math.random() * 1000 - 500;
+	particle.y = Math.random() * 1000 - 500;
+	particle.z = Math.random() * 1000 - 500;
 
 	// could make velocity a Vector3, performance?
 	particle.velocity = {}
