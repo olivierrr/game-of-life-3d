@@ -4,6 +4,7 @@ var THREE = require('n3d-threejs')
 ,   matrix_3d = require('matrix-3d')
 ,   Utils = require('./modules/utils')
 ,   Particle = require('./modules/particle')
+,	Gui = require('./modules/gui').init()
 
 var container, stats;
 var camera, scene, renderer, particles, geometry, material, h, color;
