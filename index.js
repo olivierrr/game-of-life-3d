@@ -30,6 +30,11 @@ function init() {
 	Gui.init();
 }
 
+//todo: bind to dat.gui
+function reset() {
+	particles = Particle.reset(scene);
+}
+
 function animate() {
 
 	Gui.step_begin()
@@ -43,7 +48,7 @@ function animate() {
 }
 
 function update() {
-	
+	updateParticles2()
 	//Particle.new()
 }
 
@@ -56,7 +61,7 @@ function render() {
 
 function updateParticles() {
 
-	var p1,p2;
+	var p1, p2;
 
 	for(var i=0; i<particles.length; i++) {
 
@@ -67,9 +72,22 @@ function updateParticles() {
 
 			if(calcDistance(p1,p2) < 100) {
 				drawVector(p1,p2)
-			}
-			
+			}	
 		}
+	}
+}
+
+// applies velocity
+function updateParticles2() {
+
+	var p;
+
+	for(var i=0; i<particles.length; i++) {
+		p = particles[i];
+
+		p.x += p.velocity.x;
+		p.y += p.velocity.y;
+		p.z += p.velocity.z;
 	}
 }
 

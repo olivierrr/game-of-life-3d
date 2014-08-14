@@ -28,7 +28,18 @@ var newParticle = function(){
 	particle.x = Math.random() * 2000 - 1000;
 	particle.y = Math.random() * 2000 - 1000;
 	particle.z = Math.random() * 2000 - 1000;
+
+	// could make velocity a Vector3, performance?
+	particle.velocity = {}
+	particle.velocity.x = Math.random() - 0.5;
+	particle.velocity.y = Math.random() - 0.5;
+	particle.velocity.z = Math.random() - 0.5;
+
 	particles.vertices.push( particle );
 }
+
+// todo:
+// particle pooling
+// coordinates should be within sphere
 
 module.exports.new = newParticle
