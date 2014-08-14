@@ -1,0 +1,23 @@
+{
+  "name": "gameOfLife_3d",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "browserify -e index.js > bundle.js",
+    "dev": "beefy index.js:bundle.js --live --open",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "olivierrr",
+  "license": "MIT",
+  "devDependencies": {
+    "beefy": "^2.1.0",
+    "browserify": "^5.9.3",
+    "tape": "^2.14.0"
+  },
+  "dependencies": {
+    "animation-frame": "^0.1.7",
+    "matrix-3d": "^0.1.0",
+    "n3d-threejs": "^68.0.1"
+  }
+}
