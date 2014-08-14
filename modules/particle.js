@@ -6,19 +6,12 @@ var particleSystem,
 
 module.exports.reset = function(scene){
 
-	particleCount = 1000;
+	particleCount = 100;
 	particles = new THREE.Geometry();
 
 	// create particles with random position values
 	for ( var i = 0; i < particleCount; i ++ ) {
-
-		var particle = new THREE.Vector3();
-
-		particle.x = Math.random() * 2000 - 1000;
-		particle.y = Math.random() * 2000 - 1000;
-		particle.z = Math.random() * 2000 - 1000;
-
-		particles.vertices.push( particle );
+		newParticle()
 	}
 
 	var material = new THREE.PointCloudMaterial( { size: 5 } );
@@ -28,3 +21,13 @@ module.exports.reset = function(scene){
 
 	return particles.vertices
 }
+
+var newParticle = function(){
+	var particle = new THREE.Vector3();
+	particle.x = Math.random() * 2000 - 1000;
+	particle.y = Math.random() * 2000 - 1000;
+	particle.z = Math.random() * 2000 - 1000;
+	particles.vertices.push( particle );
+}
+
+module.exports.new = newParticle

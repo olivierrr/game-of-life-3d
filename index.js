@@ -32,16 +32,61 @@ function init() {
 
 function animate() {
 
-	requestAnimationFrame( animate );
+	Gui.step_begin()
+
 	update();
 	render();
+
+	Gui.step_end()
+
+	requestAnimationFrame( animate );
 }
 
 function update() {
-	//particles[46].x += 10 //test
+	
+	//Particle.new()
 }
 
 function render() {
 
 	renderer.render( scene, camera );
 }
+
+//
+
+function updateParticles() {
+
+	var p1,p2;
+
+	for(var i=0; i<particles.length; i++) {
+
+		p1 = particles[i];
+
+		for(var j=0; j<particles.length; j++) {
+			p2 = particles[j];
+
+			//console.log(calcDistance(p1,p2))
+			drawVector(p1,p2)
+		}
+	}
+}
+
+function calcDistance(p1,p2) {
+	var o = ( (Math.pow((p1.x - p2.x),2)) + (Math.pow((p1.y - p1.y),2)) + (Math.pow((p1.z - p2.z),2)) );
+	return Math.sqrt(o);
+}
+
+function drawVector(p1,p2) {
+	var material = new THREE.LineBasicMaterial({
+        color: 0xFFFFFF	
+    });
+
+	var geometry = new THREE.Geometry();
+    geometry.vertices.push(new THREE.Vector3(p1.x, p1.y, p1.z));
+    geometry.vertices.push(new THREE.Vector3(p2.x, p2.y, p2.z));
+
+    var line = new THREE.Line(geometry, material);
+    scene.add(line);
+}
+
+updateParticles()
