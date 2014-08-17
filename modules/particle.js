@@ -7,7 +7,7 @@ var particleSystem,
 // returns array of particles (vertices)
 module.exports.reset = function(scene){
 
-	particleCount = 1000;
+	particleCount = 100;
 	particles = new THREE.Geometry();
 
 	// create particles with random position values
@@ -25,9 +25,9 @@ module.exports.reset = function(scene){
 
 var newParticle = function(){
 	var particle = new THREE.Vector3();
-	particle.x = Math.random() * 1000 - 500;
-	particle.y = Math.random() * 1000 - 500;
-	particle.z = Math.random() * 1000 - 500;
+	particle.x = Math.random() * 2000 - 1000;
+	particle.y = Math.random() * 2000 - 1000;
+	particle.z = Math.random() * 2000 - 1000;
 
 	// could make velocity a Vector3, performance?
 	particle.velocity = {}
