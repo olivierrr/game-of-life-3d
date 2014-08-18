@@ -8,10 +8,7 @@ var THREE = require('n3d-threejs')
 
 var GameOfLife = {} //proto
 
-var particles;
-
-var vectorArray = []
-
+GameOfLife.P = Particle.init()
 
 GameOfLife.init = function() {
 
@@ -24,7 +21,9 @@ GameOfLife.init = function() {
 	this.renderer = new THREE.WebGLRenderer()
 	this.renderer.setSize( window.innerWidth, window.innerHeight )
 
-	particles = Particle.reset(this.scene)
+	this.particles = this.P.reset.call(this)
+
+	this.vectorArray = []
 
 	Dom.init(this.renderer, this.camera)
 	Gui.init()
@@ -34,41 +33,36 @@ GameOfLife.init = function() {
 
 //todo: bind to dat.gui
 function reset() {
-	particles = Particle.reset(scene)
+	this.particles = Particle.reset(scene)
 }
 
 GameOfLife.update = function() {
 
 	this.updateParticles()
 	this.updateParticles2()
-
-}
-
-GameOfLife.draw = function() {
-	this.renderer.render( this.scene, this.camera )
 }
 
 GameOfLife.animate = function() {
 
 	Gui.step_begin()
 
-	if(this.isRunning === true) this.update();
+	if(this.isRunning === true) this.update()
 
-	this.draw()
+	this.renderer.render( this.scene, this.camera )
 
 	Gui.step_end()
 
 	requestAnimationFrame( this.animate.bind(this) )
 }
 
-// //temp
+
 // window.step = function() {
 // 	update()
 // }
 
-function calcDistance(p1,p2) {
+GameOfLife.calcDistance = function(p1,p2) {
 	var o = ( (Math.pow((p1.x - p2.x),2)) + (Math.pow((p1.y - p2.y),2)) + (Math.pow((p1.z - p2.z),2)) )
-	o = Math.sqrt(o);
+	o = Math.sqrt(o)
 	return o
 }
 
@@ -76,18 +70,20 @@ GameOfLife.updateParticles = function() {
 
 	var p1, p2, vectors = []
 
-	for(var i=0; i<particles.length; i++) {
+	for(var i=0; i<this.particles.length; i++) {
 
-		p1 = particles[i]
+		// particle one
+		p1 = this.particles[i]
 
 		// reset neighbor array
 		p1.neighbors = []
 
-		for(var j=0; j<particles.length; j++) {
+		for(var j=0; j<this.particles.length; j++) {
 
-			p2 = particles[j]
+			// particle two
+			p2 = this.particles[j]
 
-			if( calcDistance(p1,p2) < 300 ) {
+			if( this.calcDistance(p1,p2) < 300 ) {
 
 				// check if is neighbor
 				if(p2.neighbors.indexOf(p1.id) !== -1) continue
@@ -95,49 +91,52 @@ GameOfLife.updateParticles = function() {
 				// check if is self
 				if(p2.id === p1.id) continue
 
+				// update neighbor array
 				p1.neighbors.push(p2.id)
+
 				vectors.push(p1,p2)
 			}	
 		}
-
 	}
 
 	this.drawVectorsEach(vectors)
 	vectors = []
 }
 
-// applies velocity
+// update position
 GameOfLife.updateParticles2 = function() {
 
-	var p1;
+	var p1
 
-	for(var i=0; i<particles.length; i++) {
+	for(var i=0; i<this.particles.length; i++) {
 
-		p1 = particles[i];
+		p1 = this.particles[i]
 
-		p1.x += p1.velocity.x;
-		p1.y += p1.velocity.y;
-		p1.z += p1.velocity.z;
+		// accelerate
+		p1.x += p1.a.x
+		p1.y += p1.a.y
+		p1.z += p1.a.z
 
 		// bounce on wall collision
-		if(p1.x > 1000) p1.velocity.x = -Math.abs(p1.velocity.x)
-		if(p1.y > 1000) p1.velocity.y = -Math.abs(p1.velocity.y)
-		if(p1.z > 1000) p1.velocity.z = -Math.abs(p1.velocity.z)
-		if(p1.x < -1000) p1.velocity.x = Math.abs(p1.velocity.x)
-		if(p1.y < -1000) p1.velocity.y = Math.abs(p1.velocity.y)
-		if(p1.z < -1000) p1.velocity.z = Math.abs(p1.velocity.z)
+		if(p1.x > 1000) p1.a.x = -Math.abs(p1.a.x)
+		if(p1.y > 1000) p1.a.y = -Math.abs(p1.a.y)
+		if(p1.z > 1000) p1.a.z = -Math.abs(p1.a.z)
+		if(p1.x < -1000) p1.a.x = Math.abs(p1.a.x)
+		if(p1.y < -1000) p1.a.y = Math.abs(p1.a.y)
+		if(p1.z < -1000) p1.a.z = Math.abs(p1.a.z)
 
 	}
 }
 
 GameOfLife.drawVectorsEach = function(vectors) {
 
-	//
-	for(var i=0; i<vectorArray.length; i++) {
-		this.scene.remove(vectorArray[i])
+	// remove vectors from scene
+	for(var i=0; i<this.vectorArray.length; i++) {
+		this.scene.remove(this.vectorArray[i])
 	}
-	vectorArray = []
-	//
+	// clear array
+	this.vectorArray = []
+
 
 	var material = new THREE.LineBasicMaterial({ color: 'red' })
 
@@ -155,19 +154,16 @@ GameOfLife.drawVectorsEach = function(vectors) {
 
 		var line = new THREE.Line( geometry, material )
 
-		vectorArray.push(line)
+		this.vectorArray.push(line)
 
 		this.scene.add(line)
 	}
-
 }
 
 window.instance = Object.create(GameOfLife)
 
 window.instance.init()
 window.instance.animate()
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // vectors should be a single object 
