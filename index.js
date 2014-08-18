@@ -10,6 +10,8 @@ var camera, scene, renderer, controls;
 
 var particles;
 
+var vectorArray = []
+
 running = true;
 
 init();
@@ -32,7 +34,7 @@ function init() {
 	Gui.init();
 
 	//test
-	initVector()
+	//initVector()
 }
 
 //todo: bind to dat.gui
@@ -91,7 +93,7 @@ function updateParticles() {
 			// todo: make more efficient
 			if(p1 === p2) continue
 
-			if( calcDistance(p1,p2) < 100 ) {
+			if( calcDistance(p1,p2) < 400 ) {
 
 				vectors.push(p1,p2)
 			}	
@@ -99,7 +101,7 @@ function updateParticles() {
 
 	}
 
-	drawVectors(vectors)
+	drawVectorsEach(vectors)
 	vectors = [];
 }
 
@@ -127,77 +129,118 @@ function updateParticles2() {
 	}
 }
 
-var geo, line;
+function drawVectorsEach(vectors) {
 
-function initVector(){
-
-	var color, t = 1
-
-	var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors })
-
-	geo = new THREE.Geometry()
-
-	// initiate vector blob
-	for(var i=0; i<1000; i+=2) {
-
-		var vert1 = new THREE.Vector3(i,i,i)
-		var vert2 = new THREE.Vector3(i,i,i)
-
-		geo.vertices.push( vert1, vert2 );
-
-		if(t === 1) {
-			color = new THREE.Color( 'red' )
-			t = 0
-		} else {
-			color = new THREE.Color( 'blue' )
-			t = 1
-		}
-
-
-		geo.colors[i] = color
-		geo.colors[i+1] = color
-
-		//console.log( JSON.stringify(geo.colors[i]) + ' ' + JSON.stringify(geo.colors[i+1]))
+	//
+	for(var i=0; i<vectorArray.length; i++) {
+		scene.remove(vectorArray[i])
 	}
 
-	line = new THREE.Line(geo, material);
+	vectorArray = []
+	//
 
-    scene.add(line);
 
-    console.log(geo)
-}
+	var material = new THREE.LineBasicMaterial({ color: 'red' })
+	var color = new THREE.Color( 'red' )
 
-// should be single geometry with alphas
-function drawVectors(vectors) {
+	for(var i=0; i<vectors.length; i+=2) {
 
-	//console.log(vectors.length)
-	console.log(vectors)
+		var geometry = new THREE.Geometry()
 
-	var last, p1, p2
+		var vec1 = vectors[i]
+		var vec2 = vectors[i+1]
 
-	for(var i=0; i<1000; i+=2) {
+		var vert1 = new THREE.Vector3(vec1.x, vec1.y, vec1.z)
+		var vert2 = new THREE.Vector3(vec2.x, vec2.y, vec2.z)
 
-		p1 = vectors[i]
-		p2 = vectors[i+1]
+		geometry.vertices.push( vert1, vert2 )
 
-		if(geo.vertices[i] && geo.vertices[i+1] && p1 && p2) {
+		var line = new THREE.Line( geometry, material )
 
-			//if(i!==0) geo.vertices[i].set(last.x, last.y, last.z)
-			geo.vertices[i].set(p1.x, p1.y, p1.z)
+		vectorArray.push(line)
 
-			geo.vertices[i+1].set(p2.x, p2.y, p2.z)
-
-			last = p2
-
-		} else {
-
-			//set slack away in 'pool'
-			geo.vertices[i].set(i,i,i)
-			geo.vertices[i+1].set(i,i,i)
-		}
+		scene.add(line)
 	}
 
-	//this should be auto
 	line.geometry.verticesNeedUpdate = true;
 	line.geometry.colorsNeedUpdate = true;
 }
+
+
+
+// //
+
+// var geo, line;
+
+// function initVector(){
+
+// 	var color, t = 1
+
+// 	var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors })
+
+// 	geo = new THREE.Geometry()
+
+// 	// initiate vector blob
+// 	for(var i=0; i<1000; i+=2) {
+
+// 		var vert1 = new THREE.Vector3(i,i,i)
+// 		var vert2 = new THREE.Vector3(i,i,i)
+
+// 		geo.vertices.push( vert1, vert2 );
+
+// 		if(t === 1) {
+// 			color = new THREE.Color( 'red' )
+// 			t = 0
+// 		} else {
+// 			color = new THREE.Color( 'blue' )
+// 			t = 1
+// 		}
+
+
+// 		geo.colors[i] = color
+// 		geo.colors[i+1] = color
+
+// 		//console.log( JSON.stringify(geo.colors[i]) + ' ' + JSON.stringify(geo.colors[i+1]))
+// 	}
+
+// 	line = new THREE.Line(geo, material);
+
+//     scene.add(line);
+
+//     console.log(geo)
+// }
+
+// // should be single geometry with alphas
+// function drawVectors(vectors) {
+
+// 	//console.log(vectors.length)
+// 	console.log(vectors)
+
+// 	var last, p1, p2
+
+// 	for(var i=0; i<1000; i+=2) {
+
+// 		p1 = vectors[i]
+// 		p2 = vectors[i+1]
+
+// 		if(geo.vertices[i] && geo.vertices[i+1] && p1 && p2) {
+
+// 			//if(i!==0) geo.vertices[i].set(last.x, last.y, last.z)
+// 			geo.vertices[i].set(p1.x, p1.y, p1.z)
+
+// 			geo.vertices[i+1].set(p2.x, p2.y, p2.z)
+
+// 			last = p2
+
+// 		} else {
+
+// 			//set slack away in 'pool'
+// 			geo.vertices[i].set(i,i,i)
+// 			geo.vertices[i+1].set(i,i,i)
+// 		}
+// 	}
+
+// 	//this should be auto
+// 	line.geometry.verticesNeedUpdate = true;
+// 	line.geometry.colorsNeedUpdate = true;
+// }
