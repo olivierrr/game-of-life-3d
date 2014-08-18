@@ -1,7 +1,7 @@
 var THREE = require('n3d-threejs')
 
 window.particleSystem
-window.maxParticleCount = 100
+window.maxParticleCount = 200
 window.particles
 
 // returns array of particles (vertices)

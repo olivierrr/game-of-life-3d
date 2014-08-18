@@ -6,32 +6,30 @@ var THREE = require('n3d-threejs')
 ,	Gui = require('./modules/gui')
 ,	Dom = require('./modules/dom')
 
-var camera, scene, renderer, controls;
+var GameOfLife = {} //proto
 
 var particles;
 
 var vectorArray = []
 
-running = true;
 
-init();
-animate();
-
-function init() {
+GameOfLife.init = function() {
 
 	// THREE setup (rendered/scene/camera/fog/controls)
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 )
-	camera.position.z = 1000
-	controls = new THREE.OrbitControls( camera )
-	scene = new THREE.Scene()
-	scene.fog = new THREE.FogExp2( 0x000000, 0.0004 )
-	renderer = new THREE.WebGLRenderer()
-	renderer.setSize( window.innerWidth, window.innerHeight )
+	this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 )
+	this.camera.position.z = 1000
+	this.controls = new THREE.OrbitControls( this.camera )
+	this.scene = new THREE.Scene()
+	this.scene.fog = new THREE.FogExp2( 0x000000, 0.0004 )
+	this.renderer = new THREE.WebGLRenderer()
+	this.renderer.setSize( window.innerWidth, window.innerHeight )
 
-	particles = Particle.reset(scene);
+	particles = Particle.reset(this.scene)
 
-	Dom.init(renderer, camera)
-	Gui.init();
+	Dom.init(this.renderer, this.camera)
+	Gui.init()
+
+	this.isRunning = true
 }
 
 //todo: bind to dat.gui
@@ -39,34 +37,34 @@ function reset() {
 	particles = Particle.reset(scene)
 }
 
-function animate() {
+GameOfLife.update = function() {
+
+	this.updateParticles()
+	this.updateParticles2()
+
+}
+
+GameOfLife.draw = function() {
+	this.renderer.render( this.scene, this.camera )
+}
+
+GameOfLife.animate = function() {
 
 	Gui.step_begin()
 
-	if(running === true) update();
-	render();
+	if(this.isRunning === true) this.update();
+
+	this.draw()
 
 	Gui.step_end()
 
-	requestAnimationFrame( animate )
+	requestAnimationFrame( this.animate.bind(this) )
 }
 
-//temp
-window.step = function() {
-	update()
-}
-
-function update() {
-
-	updateParticles()
-	updateParticles2()
-
-}
-
-function render() {
-
-	renderer.render( scene, camera )
-}
+// //temp
+// window.step = function() {
+// 	update()
+// }
 
 function calcDistance(p1,p2) {
 	var o = ( (Math.pow((p1.x - p2.x),2)) + (Math.pow((p1.y - p2.y),2)) + (Math.pow((p1.z - p2.z),2)) )
@@ -74,7 +72,7 @@ function calcDistance(p1,p2) {
 	return o
 }
 
-function updateParticles() {
+GameOfLife.updateParticles = function() {
 
 	var p1, p2, vectors = []
 
@@ -104,12 +102,12 @@ function updateParticles() {
 
 	}
 
-	drawVectorsEach(vectors)
-	vectors = [];
+	this.drawVectorsEach(vectors)
+	vectors = []
 }
 
 // applies velocity
-function updateParticles2() {
+GameOfLife.updateParticles2 = function() {
 
 	var p1;
 
@@ -132,11 +130,11 @@ function updateParticles2() {
 	}
 }
 
-function drawVectorsEach(vectors) {
+GameOfLife.drawVectorsEach = function(vectors) {
 
 	//
 	for(var i=0; i<vectorArray.length; i++) {
-		scene.remove(vectorArray[i])
+		this.scene.remove(vectorArray[i])
 	}
 	vectorArray = []
 	//
@@ -159,12 +157,15 @@ function drawVectorsEach(vectors) {
 
 		vectorArray.push(line)
 
-		scene.add(line)
+		this.scene.add(line)
 	}
 
 }
 
+window.instance = Object.create(GameOfLife)
 
+window.instance.init()
+window.instance.animate()
 
 
 
