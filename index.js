@@ -20,26 +20,23 @@ animate();
 function init() {
 
 	// THREE setup (rendered/scene/camera/fog/controls)
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 );
-	camera.position.z = 1000;
-	controls = new THREE.OrbitControls( camera );
-	scene = new THREE.Scene();
-	scene.fog = new THREE.FogExp2( 0x000000, 0.0005 );
-	renderer = new THREE.WebGLRenderer();
-	renderer.setSize( window.innerWidth, window.innerHeight );
+	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 )
+	camera.position.z = 1000
+	controls = new THREE.OrbitControls( camera )
+	scene = new THREE.Scene()
+	scene.fog = new THREE.FogExp2( 0x000000, 0.0004 )
+	renderer = new THREE.WebGLRenderer()
+	renderer.setSize( window.innerWidth, window.innerHeight )
 
 	particles = Particle.reset(scene);
 
-	Dom.init(renderer, camera);
+	Dom.init(renderer, camera)
 	Gui.init();
-
-	//test
-	//initVector()
 }
 
 //todo: bind to dat.gui
 function reset() {
-	particles = Particle.reset(scene);
+	particles = Particle.reset(scene)
 }
 
 function animate() {
@@ -51,7 +48,7 @@ function animate() {
 
 	Gui.step_end()
 
-	requestAnimationFrame( animate );
+	requestAnimationFrame( animate )
 }
 
 //temp
@@ -68,13 +65,12 @@ function update() {
 
 function render() {
 
-	renderer.render( scene, camera );
+	renderer.render( scene, camera )
 }
 
 function calcDistance(p1,p2) {
-	var o = ( (Math.pow((p1.x - p2.x),2)) + (Math.pow((p1.y - p2.y),2)) + (Math.pow((p1.z - p2.z),2)) );
+	var o = ( (Math.pow((p1.x - p2.x),2)) + (Math.pow((p1.y - p2.y),2)) + (Math.pow((p1.z - p2.z),2)) )
 	o = Math.sqrt(o);
-	//if(o < 100) console.log(o + ' p1:' + JSON.stringify(p1) + ' p2: ' + JSON.stringify(p2))
 	return o
 }
 
@@ -86,15 +82,22 @@ function updateParticles() {
 
 		p1 = particles[i]
 
+		// reset neighbor array
+		p1.neighbors = []
+
 		for(var j=0; j<particles.length; j++) {
 
 			p2 = particles[j]
 
-			// todo: make more efficient
-			if(p1 === p2) continue
+			if( calcDistance(p1,p2) < 300 ) {
 
-			if( calcDistance(p1,p2) < 400 ) {
+				// check if is neighbor
+				if(p2.neighbors.indexOf(p1.id) !== -1) continue
 
+				// check if is self
+				if(p2.id === p1.id) continue
+
+				p1.neighbors.push(p2.id)
 				vectors.push(p1,p2)
 			}	
 		}
@@ -135,13 +138,10 @@ function drawVectorsEach(vectors) {
 	for(var i=0; i<vectorArray.length; i++) {
 		scene.remove(vectorArray[i])
 	}
-
 	vectorArray = []
 	//
 
-
 	var material = new THREE.LineBasicMaterial({ color: 'red' })
-	var color = new THREE.Color( 'red' )
 
 	for(var i=0; i<vectors.length; i+=2) {
 
@@ -162,14 +162,15 @@ function drawVectorsEach(vectors) {
 		scene.add(line)
 	}
 
-	line.geometry.verticesNeedUpdate = true;
-	line.geometry.colorsNeedUpdate = true;
 }
 
 
 
-// //
 
+
+///////////////////////////////////////////////////////////////////////////////
+// vectors should be a single object 
+///////////////////////////////////////////////////////////////////////////////
 // var geo, line;
 
 // function initVector(){
