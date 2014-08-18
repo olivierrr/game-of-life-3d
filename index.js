@@ -92,10 +92,11 @@ function updateParticles() {
 			if(p1 === p2) continue
 
 			if( calcDistance(p1,p2) < 100 ) {
+
 				vectors.push(p1,p2)
 			}	
 		}
-		//console.log(calcDistance(p1,p2))
+
 	}
 
 	drawVectors(vectors)
@@ -130,7 +131,7 @@ var geo, line;
 
 function initVector(){
 
-	var color, color2, t = 1
+	var color, t = 1
 
 	var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors })
 
@@ -146,19 +147,17 @@ function initVector(){
 
 		if(t === 1) {
 			color = new THREE.Color( 'red' )
-			color2 = new THREE.Color( 'red' )
 			t = 0
 		} else {
 			color = new THREE.Color( 'blue' )
-			color2 = new THREE.Color( 'blue' )
 			t = 1
 		}
 
 
 		geo.colors[i] = color
-		geo.colors[i+1] = color2
+		geo.colors[i+1] = color
 
-		console.log( JSON.stringify(geo.colors[i]) + ' ' + JSON.stringify(geo.colors[i+1]))
+		//console.log( JSON.stringify(geo.colors[i]) + ' ' + JSON.stringify(geo.colors[i+1]))
 	}
 
 	line = new THREE.Line(geo, material);
@@ -171,7 +170,9 @@ function initVector(){
 // should be single geometry with alphas
 function drawVectors(vectors) {
 
-	console.log(vectors.length)
+	//console.log(vectors.length)
+	console.log(vectors)
+
 	var last, p1, p2
 
 	for(var i=0; i<1000; i+=2) {
@@ -181,20 +182,20 @@ function drawVectors(vectors) {
 
 		if(geo.vertices[i] && geo.vertices[i+1] && p1 && p2) {
 
-			if(last) geo.vertices[i].set(last.x, last.y, last.z)
-			else geo.vertices[i].set(p1.x, p1.y, p1.z)
+			//if(i!==0) geo.vertices[i].set(last.x, last.y, last.z)
+			geo.vertices[i].set(p1.x, p1.y, p1.z)
 
 			geo.vertices[i+1].set(p2.x, p2.y, p2.z)
 
 			last = p2
 
-		} else break
-	}
+		} else {
 
-	// console.log( JSON.stringify(geo.colors[123]))
-	// console.log( JSON.stringify(geo.colors[124]))
-	// console.log( JSON.stringify(geo.colors[125]))
-	// console.log( JSON.stringify(geo.colors[125]))
+			//set slack away in 'pool'
+			geo.vertices[i].set(i,i,i)
+			geo.vertices[i+1].set(i,i,i)
+		}
+	}
 
 	//this should be auto
 	line.geometry.verticesNeedUpdate = true;
