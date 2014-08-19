@@ -4,52 +4,50 @@ window.particleSystem
 window.maxParticleCount = 200
 window.particles
 
-var newParticle = function(){
+var p = function(GameOfLife) {
 
-	var particle = new THREE.Vector3()
+	GameOfLife.PARTICLE = {}
 
-	// particle position
-	particle.x = Math.random() * 2000 - 1000
-	particle.y = Math.random() * 2000 - 1000
-	particle.z = Math.random() * 2000 - 1000
+	GameOfLife.PARTICLE.newParticle = function(){
 
-	// particle acceleration
-	particle.a = {}
-	particle.a.x = Math.random() - 0.5
-	particle.a.y = Math.random() - 0.5
-	particle.a.z = Math.random() - 0.5
+		var particle = new THREE.Vector3()
 
-	//unique particle id
-	particle.id = Math.random()
+		// particle position
+		particle.x = Math.random() * 2000 - 1000
+		particle.y = Math.random() * 2000 - 1000
+		particle.z = Math.random() * 2000 - 1000
 
-	// holds particles this particle is connected to
-	particle.neighbors = []
+		// particle acceleration
+		particle.a = {}
+		particle.a.x = Math.random() - 0.5
+		particle.a.y = Math.random() - 0.5
+		particle.a.z = Math.random() - 0.5
 
-	particles.vertices.push( particle )
-}
+		//unique particle id
+		particle.id = Math.random()
 
-module.exports.init = function() {
+		// holds particles this particle is connected to
+		particle.neighbors = []
 
-	var PARTICLE = {}
+		particles.vertices.push( particle )
+	}
 
-	PARTICLE.reset = function(){
+	GameOfLife.PARTICLE.reset = function(){
 		particles = new THREE.Geometry()
 
 		// create particles with random position values
 		for ( var i = 0; i < maxParticleCount; i ++ ) {
-			newParticle()
+			this.PARTICLE.newParticle()
 		}
 
 		var material = new THREE.PointCloudMaterial( { size: 5 } )
 		particleSystem = new THREE.PointCloud( particles, material )
 		particleSystem.sortParticles = true
 
-		console.log(this)
-
 		this.scene.add( particleSystem )
 
 		return particles.vertices
 	}
-
-	return PARTICLE
 }
+
+module.exports = p
