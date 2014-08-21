@@ -36,6 +36,9 @@ GameOfLife.init = function() {
 	// holds all particles
 	this.particles = []
 
+	// holds all INACTIVE particles
+	this.particlesInactive = []
+
 	// reset particles
 	this.resetParticles()
 
@@ -78,6 +81,9 @@ GameOfLife.newParticle = function() {
     particle.a.y = Math.random() - 0.5
     particle.a.z = Math.random() - 0.5
 
+    // set state to active
+    particle.isActive = true
+
     // set particle id
     particle.id = Math.random()
 
@@ -118,6 +124,7 @@ GameOfLife.update = function() {
 
 	this.updateParticles()
 	this.updateParticles2()
+	this.updateParticles3()
 }
 
 GameOfLife.animate = function() {
@@ -142,6 +149,9 @@ GameOfLife.updateParticles = function() {
 		// particle one
 		p1 = this.particles[i]
 
+		// check if is active
+		if(p1.isActive === false) continue
+
 		// reset neighbor array
 		p1.neighbors = []
 
@@ -149,6 +159,9 @@ GameOfLife.updateParticles = function() {
 
 			// particle two
 			p2 = this.particles[j]
+
+			// check if is active
+			if(p2.isActive === false) continue
 
 			if( Utils.calcDistance(p1,p2) < this.minDistance ) {
 
@@ -182,6 +195,9 @@ GameOfLife.updateParticles2 = function() {
 
 		p1 = this.particles[i]
 
+		// check if is active
+		if(p1.isActive === false) continue
+
 		// bounce on wall collision
 		if(p1.x > 1000) p1.a.x = -Math.abs(p1.a.x)
 		if(p1.y > 1000) p1.a.y = -Math.abs(p1.a.y)
@@ -194,6 +210,29 @@ GameOfLife.updateParticles2 = function() {
 		p1.x += p1.a.x
 		p1.y += p1.a.y
 		p1.z += p1.a.z
+
+	}
+}
+
+GameOfLife.updateParticles3 = function() {
+
+	var p1
+
+	for(var i=0; i<this.particles.length; i++) {
+
+		p1 = this.particles[i]
+
+		// check if is active
+		if(p1.isActive === false) continue
+
+		if(p1.neighbors.length > 5) {
+			
+			p1.x = 5000
+			p1.y = 5000
+			p1.z = 5000
+
+			p1.isActive = false
+		}
 
 	}
 }
