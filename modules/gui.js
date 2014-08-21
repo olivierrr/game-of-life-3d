@@ -1,28 +1,28 @@
 Stats = require('../modules/stats')
 DatGui = require('dat-gui')
 
-var o = window.o
+var o, stats
 
 var g = function() {
-	this.message = 'game of life'
-	this.speed = 0.8
-	this.displayOutline = false
-	this.play = function() { window.running = true }
-	this.pause = function() { window.running = false }
-	this.step = function() { window.step() }
+
+	o = window.o
+
+	this.resume = function() { o.settings_resume() }
+	this.stop = function() { o.settings_stop() }
+	this.step = function() { o.settings_step() }
+	this.reset = function() { o.settings_reset() }
 }
 
 function datgui(){
+	
 	var text = new g()
  	var gui = new DatGui.GUI()
- 	gui.add(text, 'message')
- 	gui.add(text, 'speed', -5, 5)
- 	gui.add(text, 'play')
- 	gui.add(text, 'pause')
- 	gui.add(text, 'step')
-}
 
-var stats;
+ 	gui.add(text, 'resume')
+ 	gui.add(text, 'stop')
+ 	gui.add(text, 'step')
+ 	gui.add(text, 'reset')
+}
 
 function stats() {
 	stats = new Stats()
@@ -32,6 +32,7 @@ function stats() {
 	stats.domElement.style.top = '0px'
 	document.body.appendChild( stats.domElement )
 }
+
 
 function step_begin() {
 	stats.begin()

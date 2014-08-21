@@ -214,6 +214,26 @@ GameOfLife.drawVectorsEach = function(vectors) {
 	}
 }
 
+GameOfLife.settings_stop = function() {
+
+	this.isRunning = false
+}
+
+GameOfLife.settings_step = function() {
+
+	if(this.isRunning === false) this.update()
+}
+
+GameOfLife.settings_resume = function() {
+
+	this.isRunning = true
+}
+
+GameOfLife.settings_reset = function() {
+
+	this.resetParticles()
+}
+
 window.o = Object.create(GameOfLife)
 
 window.o.init()
