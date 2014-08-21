@@ -92,6 +92,8 @@ GameOfLife.newParticle = function() {
 
     // add particle to geometry blob
     this.particlesGeo.vertices.push(particle)
+
+    return this.particlesGeo.vertices[this.particlesGeo.vertices.length-1]
 }
 
 GameOfLife.resetParticles = function() {
@@ -125,6 +127,7 @@ GameOfLife.update = function() {
 	this.updateParticles()
 	this.updateParticles2()
 	this.updateParticles3()
+
 }
 
 GameOfLife.animate = function() {
@@ -225,16 +228,65 @@ GameOfLife.updateParticles3 = function() {
 		// check if is active
 		if(p1.isActive === false) continue
 
-		if(p1.neighbors.length > 5) {
-			
-			p1.x = 5000
-			p1.y = 5000
-			p1.z = 5000
+		//console.log(p1.neighbors.length)
 
-			p1.isActive = false
+		if(p1.neighbors.length > 1) {
+			
+			this.addParticle(p1)
+			continue
 		}
 
+		else if(p1.neighbors.length > 3) {
+
+			this.removeParticle(p1)
+			continue
+		}
+
+		else if(p1.neighbors.length === 0) {
+
+			console.log('deleted!')
+			this.removeParticle(p1)
+			continue
+		}
 	}
+}
+
+GameOfLife.removeParticle = function(p1) {
+
+	p1.x = 5000
+	p1.y = 5000
+	p1.z = 5000
+
+	p1.isActive = false
+}
+
+GameOfLife.addParticle = function(inherits) {
+
+	// look for avaliable particle on pool
+	for(var i=0; i<this.particles.length; i+=1) {
+		if(this.particles[i].isActive === false) {
+
+			p1 = this.particles[i]
+
+			p1.isActive = true
+
+			p1.id = Math.random()
+
+			p1.neighbors = []
+
+			p1.x = Math.floor((Math.random() * -Math.abs(inherits.x)) + inherits.x)
+			p1.y = Math.floor((Math.random() * -Math.abs(inherits.y)) + inherits.y)
+			p1.z = Math.floor((Math.random() * -Math.abs(inherits.z)) + inherits.z)
+
+			return p1
+		}
+	}
+
+	console.log('no avaliable particles in pool')
+
+	// if no avaliable partciles in pool
+	// create new particle
+
 }
 
 GameOfLife.drawVectorsEach = function(vectors) {
