@@ -8,21 +8,23 @@ var THREE = require('n3d-threejs')
 
 var GameOfLife = {} //proto
 
-GameOfLife.P = Particle(GameOfLife)
-
 GameOfLife.init = function() {
 
 	// THREE setup (rendered/scene/camera/fog/controls)
 	this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 )
 	this.camera.position.z = 1000
 	this.controls = new THREE.OrbitControls( this.camera )
-	this.controls.autoRotate = true
+	this.controls.maxDistance = 2500
 	this.scene = new THREE.Scene()
 	this.scene.fog = new THREE.FogExp2( 0x000000, 0.0004 )
 	this.renderer = new THREE.WebGLRenderer()
 	this.renderer.setSize( window.innerWidth, window.innerHeight )
 
-	this.particles = this.PARTICLE.reset.call(this)
+	//this.particle = this.Particle.reset()
+
+	//this.creaP()
+
+	this.Particle.reset.call(this)
 
 	this.vectorArray = []
 
@@ -32,10 +34,61 @@ GameOfLife.init = function() {
 	this.isRunning = true
 }
 
-//todo: bind to dat.gui
-function reset() {
-	this.particles = Particle.reset(scene)
+/*---------------------------------------------------------
+	Particle methods
+*/
+
+GameOfLife.Particle = {}
+
+GameOfLife.Particle.newParticle = function() {
+
+    var particle = new THREE.Vector3()
+
+    // particle position
+    particle.x = Math.random() * 2000 - 1000
+    particle.y = Math.random() * 2000 - 1000
+    particle.z = Math.random() * 2000 - 1000
+
+    // particle acceleration
+    particle.a = {}
+    particle.a.x = Math.random() - 0.5
+    particle.a.y = Math.random() - 0.5
+    particle.a.z = Math.random() - 0.5
+
+    //unique particle id
+    particle.id = Math.random()
+
+    // holds particles this particle is connected to
+    particle.neighbors = []
+
+    particles.vertices.push(particle)
 }
+
+GameOfLife.Particle.reset = function() {
+
+    particles = new THREE.Geometry()
+
+    // create particles with random position values
+    for (var i = 0; i < maxParticleCount; i++) {
+        GameOfLife.Particle.newParticle()
+    }
+
+    var material = new THREE.PointCloudMaterial({ size: 5 })
+    particleSystem = new THREE.PointCloud(particles, material)
+    particleSystem.sortParticles = true
+
+    this.scene.add(particleSystem)
+
+    this.particles = particles.vertices
+}
+
+/*
+	Particle methods
+---------------------------------------------------------*/
+
+
+GameOfLife.durp = {}
+GameOfLife.durp.harp = 123
 
 GameOfLife.update = function() {
 
@@ -61,12 +114,6 @@ GameOfLife.animate = function() {
 // 	update()
 // }
 
-GameOfLife.calcDistance = function(p1,p2) {
-	var o = ( (Math.pow((p1.x - p2.x),2)) + (Math.pow((p1.y - p2.y),2)) + (Math.pow((p1.z - p2.z),2)) )
-	o = Math.sqrt(o)
-	return o
-}
-
 GameOfLife.updateParticles = function() {
 
 	var p1, p2, vectors = []
@@ -84,7 +131,7 @@ GameOfLife.updateParticles = function() {
 			// particle two
 			p2 = this.particles[j]
 
-			if( this.calcDistance(p1,p2) < 300 ) {
+			if( Utils.calcDistance(p1,p2) < 300 ) {
 
 				// check if is neighbor
 				if(p2.neighbors.indexOf(p1.id) !== -1) continue
