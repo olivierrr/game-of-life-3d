@@ -10,6 +10,10 @@ var GameOfLife = {} //proto
 
 GameOfLife.init = function() {
 
+	//setings
+	this.minDistance = 300
+	this.maxParticleCount = 200
+
 	// THREE setup (rendered/scene/camera/fog/controls)
 	this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 )
 	this.camera.position.z = 1000
@@ -45,6 +49,7 @@ GameOfLife.init = function() {
 
 	// start up animation loop
 	this.animate()
+
 }
 
 GameOfLife.reset = function() {
@@ -84,15 +89,13 @@ GameOfLife.newParticle = function() {
 }
 
 GameOfLife.resetParticles = function() {
-
-	var maxParticleCount = 200
 	
 	var particleMaterial
 
     this.particlesGeo = new THREE.Geometry()
 
     // create particles with random position values
-    for (var i = 0; i < maxParticleCount; i++) {
+    for (var i = 0; i < this.maxParticleCount; i++) {
         this.newParticle()
     }
 
@@ -147,7 +150,7 @@ GameOfLife.updateParticles = function() {
 			// particle two
 			p2 = this.particles[j]
 
-			if( Utils.calcDistance(p1,p2) < 300 ) {
+			if( Utils.calcDistance(p1,p2) < this.minDistance ) {
 
 				// check if is neighbor
 				if(p2.neighbors.indexOf(p1.id) !== -1) continue
@@ -228,6 +231,8 @@ GameOfLife.drawVectorsEach = function(vectors) {
 	}
 }
 
+// 'settings'
+
 GameOfLife.settings_stop = function() {
 
 	this.isRunning = false
@@ -247,6 +252,18 @@ GameOfLife.settings_reset = function() {
 
 	this.reset()
 }
+
+GameOfLife.settings_maxParticleCount = function(val) {
+
+	this.maxParticleCount = val
+}
+
+GameOfLife.settings_minDistance = function(val) {
+
+	this.minDistance = val
+}
+
+// start
 
 window.o = Object.create(GameOfLife)
 
