@@ -23,6 +23,9 @@ GameOfLife.init = function() {
 	// holds all vectors
 	this.vectorArray = []
 
+	// particle cloud
+	this.particleSystem
+
 	// particles geometry blob
 	this.particlesGeo
 
@@ -42,6 +45,16 @@ GameOfLife.init = function() {
 
 	// start up animation loop
 	this.animate()
+}
+
+GameOfLife.reset = function() {
+
+	//particle reset
+	this.scene.remove(this.particleSystem)
+	this.resetParticles()
+
+	//vector reset
+	//todo
 }
 
 GameOfLife.newParticle = function() {
@@ -73,7 +86,8 @@ GameOfLife.newParticle = function() {
 GameOfLife.resetParticles = function() {
 
 	var maxParticleCount = 200
-	var particleSystem, particleMaterial
+	
+	var particleMaterial
 
     this.particlesGeo = new THREE.Geometry()
 
@@ -84,16 +98,16 @@ GameOfLife.resetParticles = function() {
 
     particleMaterial = new THREE.PointCloudMaterial({ size: 5 })
 
-    particleSystem = new THREE.PointCloud(this.particlesGeo, particleMaterial)
+    this.particleSystem = new THREE.PointCloud(this.particlesGeo, particleMaterial)
 
     // enables particle updating
-    particleSystem.sortParticles = true
+    this.particleSystem.sortParticles = true
 
     // set particle array
     this.particles = this.particlesGeo.vertices
 
     // add particle system to scene
-    this.scene.add(particleSystem)
+    this.scene.add(this.particleSystem)
 
 }
 
@@ -231,7 +245,7 @@ GameOfLife.settings_resume = function() {
 
 GameOfLife.settings_reset = function() {
 
-	this.resetParticles()
+	this.reset()
 }
 
 window.o = Object.create(GameOfLife)
