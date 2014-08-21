@@ -1,7 +1,7 @@
 Stats = require('../modules/stats')
 DatGui = require('dat-gui')
 
-var o = window.instance
+var o = window.o
 
 var g = function() {
 	this.message = 'game of life'

@@ -20,75 +20,82 @@ GameOfLife.init = function() {
 	this.renderer = new THREE.WebGLRenderer()
 	this.renderer.setSize( window.innerWidth, window.innerHeight )
 
-	//this.particle = this.Particle.reset()
-
-	//this.creaP()
-
-	this.Particle.reset.call(this)
-
+	// holds all vectors
 	this.vectorArray = []
 
+	// particles geometry blob
+	this.particlesGeo
+
+	// holds all particles
+	this.particles = []
+
+	// reset particles
+	this.resetParticles()
+
+	// append scene to dom
 	Dom.init(this.renderer, this.camera)
+
+	// FPS meter and GUI
 	Gui.init()
 
 	this.isRunning = true
+
+	// start up animation loop
+	this.animate()
 }
 
-/*---------------------------------------------------------
-	Particle methods
-*/
+GameOfLife.newParticle = function() {
 
-GameOfLife.Particle = {}
-
-GameOfLife.Particle.newParticle = function() {
-
+	// new particle
     var particle = new THREE.Vector3()
 
-    // particle position
+    // set particle position
     particle.x = Math.random() * 2000 - 1000
     particle.y = Math.random() * 2000 - 1000
     particle.z = Math.random() * 2000 - 1000
 
-    // particle acceleration
+    // set particle acceleration
     particle.a = {}
     particle.a.x = Math.random() - 0.5
     particle.a.y = Math.random() - 0.5
     particle.a.z = Math.random() - 0.5
 
-    //unique particle id
+    // set particle id
     particle.id = Math.random()
 
     // holds particles this particle is connected to
     particle.neighbors = []
 
-    particles.vertices.push(particle)
+    // add particle to geometry blob
+    this.particlesGeo.vertices.push(particle)
 }
 
-GameOfLife.Particle.reset = function() {
+GameOfLife.resetParticles = function() {
 
-    particles = new THREE.Geometry()
+	var maxParticleCount = 200
+	var particleSystem, particleMaterial
+
+    this.particlesGeo = new THREE.Geometry()
 
     // create particles with random position values
     for (var i = 0; i < maxParticleCount; i++) {
-        GameOfLife.Particle.newParticle()
+        this.newParticle()
     }
 
-    var material = new THREE.PointCloudMaterial({ size: 5 })
-    particleSystem = new THREE.PointCloud(particles, material)
+    particleMaterial = new THREE.PointCloudMaterial({ size: 5 })
+
+    particleSystem = new THREE.PointCloud(this.particlesGeo, particleMaterial)
+
+    // enables particle updating
     particleSystem.sortParticles = true
 
+    // set particle array
+    this.particles = this.particlesGeo.vertices
+
+    // add particle system to scene
     this.scene.add(particleSystem)
 
-    this.particles = particles.vertices
 }
-
-/*
-	Particle methods
----------------------------------------------------------*/
-
-
-GameOfLife.durp = {}
-GameOfLife.durp.harp = 123
 
 GameOfLife.update = function() {
 
@@ -109,14 +116,9 @@ GameOfLife.animate = function() {
 	requestAnimationFrame( this.animate.bind(this) )
 }
 
-
-// window.step = function() {
-// 	update()
-// }
-
 GameOfLife.updateParticles = function() {
 
-	var p1, p2, vectors = []
+	var p1, p2, vectorsPoints = []
 
 	for(var i=0; i<this.particles.length; i++) {
 
@@ -142,13 +144,16 @@ GameOfLife.updateParticles = function() {
 				// update neighbor array
 				p1.neighbors.push(p2.id)
 
-				vectors.push(p1,p2)
+				vectorsPoints.push(p1,p2)
 			}	
 		}
 	}
 
-	this.drawVectorsEach(vectors)
-	vectors = []
+	// draw vectors
+	this.drawVectorsEach(vectorsPoints)
+
+	// clear vector array for next loop
+	vectorsPoints = []
 }
 
 // update position
@@ -160,11 +165,6 @@ GameOfLife.updateParticles2 = function() {
 
 		p1 = this.particles[i]
 
-		// accelerate
-		p1.x += p1.a.x
-		p1.y += p1.a.y
-		p1.z += p1.a.z
-
 		// bounce on wall collision
 		if(p1.x > 1000) p1.a.x = -Math.abs(p1.a.x)
 		if(p1.y > 1000) p1.a.y = -Math.abs(p1.a.y)
@@ -172,6 +172,11 @@ GameOfLife.updateParticles2 = function() {
 		if(p1.x < -1000) p1.a.x = Math.abs(p1.a.x)
 		if(p1.y < -1000) p1.a.y = Math.abs(p1.a.y)
 		if(p1.z < -1000) p1.a.z = Math.abs(p1.a.z)
+
+		// accelerate
+		p1.x += p1.a.x
+		p1.y += p1.a.y
+		p1.z += p1.a.z
 
 	}
 }
@@ -185,33 +190,33 @@ GameOfLife.drawVectorsEach = function(vectors) {
 	// clear array
 	this.vectorArray = []
 
+	var vectorGeo, point1, point2, vector
 
-	var material = new THREE.LineBasicMaterial({ color: 'red' })
+	var vectorMaterial = new THREE.LineBasicMaterial({ color: 'red' })
 
 	for(var i=0; i<vectors.length; i+=2) {
 
-		var geometry = new THREE.Geometry()
+		vectorGeo = new THREE.Geometry()
 
-		var vec1 = vectors[i]
-		var vec2 = vectors[i+1]
+		point1 = vectors[i] 
+		point2 = vectors[i+1]
 
-		var vert1 = new THREE.Vector3(vec1.x, vec1.y, vec1.z)
-		var vert2 = new THREE.Vector3(vec2.x, vec2.y, vec2.z)
+		point1 = new THREE.Vector3(point1.x, point1.y, point1.z)
+		point2 = new THREE.Vector3(point2.x, point2.y, point2.z)
 
-		geometry.vertices.push( vert1, vert2 )
+		vectorGeo.vertices.push( point1, point2 )
 
-		var line = new THREE.Line( geometry, material )
+		vector = new THREE.Line( vectorGeo, vectorMaterial )
 
-		this.vectorArray.push(line)
+		this.vectorArray.push(vector)
 
-		this.scene.add(line)
+		this.scene.add(vector)
 	}
 }
 
-window.instance = Object.create(GameOfLife)
+window.o = Object.create(GameOfLife)
 
-window.instance.init()
-window.instance.animate()
+window.o.init()
 
 ///////////////////////////////////////////////////////////////////////////////
 // vectors should be a single object 
