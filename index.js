@@ -10,7 +10,7 @@ var GameOfLife = {} //proto
 
 GameOfLife.init = function() {
 
-	//setings
+	// 'setings'
 	this.minDistance = 300
 	this.maxParticleCount = 200
 
@@ -24,14 +24,16 @@ GameOfLife.init = function() {
 	this.renderer = new THREE.WebGLRenderer()
 	this.renderer.setSize( window.innerWidth, window.innerHeight )
 
-	// holds all vectors
-	this.vectorArray = []
 
-	// holds vect points
-	this.vectorsPoints = []
+	// holds line points
+	this.linePoints = []
 
-	// vector pool // test
-	this.vectorPool = []
+	// line pool 
+	this.linePool = []
+
+	// populate linePool array
+	this.initLinePool()
+
 
 	// particle cloud
 	this.particleSystem
@@ -42,13 +44,9 @@ GameOfLife.init = function() {
 	// holds all particles
 	this.particles = []
 
-	// holds all INACTIVE particles
-	this.particlesInactive = []
-
-	// reset particles
+	// populate particles array
 	this.resetParticles()
 
-		this.initVectorPool()
 
 	// append scene to dom
 	Dom.init(this.renderer, this.camera)
@@ -56,9 +54,9 @@ GameOfLife.init = function() {
 	// FPS meter and GUI
 	Gui.init()
 
-	this.isRunning = true
 
-	//this.initVector()
+	// sim state
+	this.isRunning = true
 
 	// start up animation loop
 	this.animate()
@@ -71,7 +69,7 @@ GameOfLife.reset = function() {
 	this.scene.remove(this.particleSystem)
 	this.resetParticles()
 
-	//vector reset
+	//line reset
 	//todo
 }
 
@@ -137,11 +135,11 @@ GameOfLife.update = function() {
 	this.updateParticles()
 
 	// draw vectors
-	//this.drawVectorsEach(this.vectorsPoints)
-	this.drawVectors()
+	//this.updateLinesEach(this.linePoints)
+	this.updateLines()
 
 	// clear vector array for next loop
-	this.vectorsPoints = []
+	this.linePoints = []
 
 
 	this.updateParticles2()
@@ -198,13 +196,13 @@ GameOfLife.updateParticles = function() {
 				p1.neighbors.push(p2.id)
 
 				// test
-				// if(vectorsPoints[vectorsPoints.length-2]) {
-				// 	var last = vectorsPoints[vectorsPoints.length-1]
-				// 	var lastlast = vectorsPoints[vectorsPoints.length-2]
+				// if(linePoints[linePoints.length-2]) {
+				// 	var last = linePoints[linePoints.length-1]
+				// 	var lastlast = linePoints[linePoints.length-2]
 				// 	if( last.x === p2.x || last.y === p2.y || last.z === p2.z ) console.log('awdawdawdwdad')
 				// }
 
-				this.vectorsPoints.push(p1,p2)
+				this.linePoints.push(p1,p2)
 			}	
 		}
 	}
@@ -274,9 +272,7 @@ GameOfLife.updateParticles3 = function() {
 
 GameOfLife.removeParticle = function(p1) {
 
-	p1.x = 5000
-	p1.y = 5000
-	p1.z = 5000
+	p1.set(5000, 5000, 5000)
 
 	p1.isActive = false
 }
@@ -314,37 +310,34 @@ GameOfLife.addParticle = function(inherits) {
 
 }
 
-GameOfLife.drawVectors = function() {
+GameOfLife.updateLines = function() {
 
-	for(var i=0; i<this.vectorPool.length; i+=2) {
+	var i
 
-		if( this.vectorsPoints[i] && this.vectorsPoints[i+1] ) {
+	for(i=0; i<this.linePool.length; i+=2) {
 
-			this.vectorPool[i].vertices[0].x = this.vectorsPoints[i].x
-			this.vectorPool[i].vertices[0].y = this.vectorsPoints[i].y
-			this.vectorPool[i].vertices[0].z = this.vectorsPoints[i].z
+		if( this.linePoints[i] && this.linePoints[i+1] ) {
 
-			this.vectorPool[i].vertices[1].x = this.vectorsPoints[i+1].x
-			this.vectorPool[i].vertices[1].y = this.vectorsPoints[i+1].y
-			this.vectorPool[i].vertices[1].z = this.vectorsPoints[i+1].z
+			this.linePool[i].vertices[0].x = this.linePoints[i].x
+			this.linePool[i].vertices[0].y = this.linePoints[i].y
+			this.linePool[i].vertices[0].z = this.linePoints[i].z
+
+			this.linePool[i].vertices[1].x = this.linePoints[i+1].x
+			this.linePool[i].vertices[1].y = this.linePoints[i+1].y
+			this.linePool[i].vertices[1].z = this.linePoints[i+1].z
 
 			this.isActive = true
 
 			// update vertices
-			this.vectorPool[i].verticesNeedUpdate = true
+			this.linePool[i].verticesNeedUpdate = true
 		}
 
 		else {
 
-			if(this.vectorPool[0].isActive === false) continue
+			if(this.linePool[0].isActive === false) continue
 
-			this.vectorPool[i].vertices[0].x = 5000
-			this.vectorPool[i].vertices[0].y = 5000
-			this.vectorPool[i].vertices[0].z = 5000
-
-			this.vectorPool[i].vertices[1].x = 5000
-			this.vectorPool[i].vertices[1].y = 5000
-			this.vectorPool[i].vertices[1].z = 5000
+			this.linePool[i].vertices[0].set(5000, 5000, 5000)
+			this.linePool[i].vertices[1].set(5000, 5000, 5000)
 
 			this.isActive = false
 
@@ -352,21 +345,24 @@ GameOfLife.drawVectors = function() {
 
 		// TODO: nope
 		if(this.particles[0].isActive === false) {
-			this.vectorPool[i].verticesNeedUpdate = true
+			this.linePool[i].verticesNeedUpdate = true
 		}
 	}
 }
 
-GameOfLife.initVectorPool = function() {
+GameOfLife.initLinePool = function() {
 
-	this.vectorPool = []
+	var lineGeometry, lineMaterial, point1, point2, line, i
 
-	var lineGeometry, point1, point2, line
-	var lineMaterial = new THREE.LineBasicMaterial({
+	// clear vector pool
+	this.linePool = []
+
+	// set line material
+	lineMaterial = new THREE.LineBasicMaterial({
         color: 0x0000ff
     })
 
-	for(var i=0; i<1000; i++) {
+	for(i=0; i<1000; i++) {
 
 		lineGeometry = new THREE.Geometry()
 
@@ -377,13 +373,11 @@ GameOfLife.initVectorPool = function() {
 
 		line = new THREE.Line( lineGeometry, lineMaterial )
 
-		this.vectorPool.push(line.geometry)
+		this.linePool.push(line.geometry)
 
 		this.scene.add(line)
 		
 	}
-
-	console.log(this.vectorPool)
 }
 
 // 'settings'
