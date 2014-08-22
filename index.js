@@ -324,20 +324,20 @@ GameOfLife.drawVectors = function() {
 			this.vectorPool[i][0].y = this.vectorsPoints[i].y
 			this.vectorPool[i][0].z = this.vectorsPoints[i].z
 
-			this.vectorPool[i+1][1].x = this.vectorsPoints[i+1].x
-			this.vectorPool[i+1][1].y = this.vectorsPoints[i+1].y
-			this.vectorPool[i+1][1].z = this.vectorsPoints[i+1].z
+			this.vectorPool[i][1].x = this.vectorsPoints[i+1].x
+			this.vectorPool[i][1].y = this.vectorsPoints[i+1].y
+			this.vectorPool[i][1].z = this.vectorsPoints[i+1].z
 		}
 
 		else {
 
-			this.vectorPool[i][0].x = 999
-			this.vectorPool[i][0].y = 999
-			this.vectorPool[i][0].z = 999
+			this.vectorPool[i][0].x = 5000
+			this.vectorPool[i][0].y = 5000
+			this.vectorPool[i][0].z = 5000
 
-			this.vectorPool[i+1][1].x = 999
-			this.vectorPool[i+1][1].y = 999
-			this.vectorPool[i+1][1].z = 999
+			this.vectorPool[i][1].x = 5000
+			this.vectorPool[i][1].y = 5000
+			this.vectorPool[i][1].z = 5000
 
 		}
 
@@ -359,11 +359,8 @@ GameOfLife.initVectorPool = function() {
 
 		lineGeometry = new THREE.Geometry()
 
-		point1 = {x:30, y:30, z:30}
-		point2 = {x:100, y:100, z:100}
-
-		point1 = new THREE.Vector3(point1.x, point1.y, point1.z)
-		point2 = new THREE.Vector3(point2.x, point2.y, point2.z)
+		point1 = new THREE.Vector3(5000 , 5000, 5000)
+		point2 = new THREE.Vector3(5000 , 5000, 5000)
 
 		lineGeometry.vertices.push( point1, point2 )
 
@@ -371,15 +368,10 @@ GameOfLife.initVectorPool = function() {
 
 		this.vectorPool.push(line.geometry.vertices)
 
-		this.lines.push(line) //test
-
-		line.geometry.verticesNeedUpdate = true
+		this.lines.push(line)
 
 		this.scene.add(line)
-
-		// // //
 		
-
 	}
 
 	console.log(this.vectorPool)
