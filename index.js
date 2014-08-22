@@ -31,6 +31,9 @@ GameOfLife.init = function() {
 	// line pool 
 	this.linePool = []
 
+	// holds active line count
+	this.activeLines
+
 	// populate linePool array
 	this.initLinePool()
 
@@ -43,6 +46,9 @@ GameOfLife.init = function() {
 
 	// holds all particles
 	this.particles = []
+
+	// holds active particle count
+	this.activeParticles
 
 	// populate particles array
 	this.resetParticles()
@@ -107,6 +113,8 @@ GameOfLife.newParticle = function() {
 GameOfLife.resetParticles = function() {
 	
 	var particleMaterial
+
+	this.activeParticles = this.maxParticleCount
 
     this.particlesGeo = new THREE.Geometry()
 
@@ -247,15 +255,13 @@ GameOfLife.updateParticles3 = function() {
 		// check if is active
 		if(p1.isActive === false) continue
 
-		//console.log(p1.neighbors.length)
-
 		if(p1.neighbors.length > 1) {
 			
 			this.addParticle(p1)
 			continue
 		}
 
-		else if(p1.neighbors.length > 3) {
+		else if(p1.neighbors.length > 5) {
 
 			this.removeParticle(p1)
 			continue
@@ -272,6 +278,8 @@ GameOfLife.updateParticles3 = function() {
 
 GameOfLife.removeParticle = function(p1) {
 
+	this.activeParticles -= 1
+
 	p1.set(5000, 5000, 5000)
 
 	p1.isActive = false
@@ -283,6 +291,8 @@ GameOfLife.addParticle = function(inherits) {
 	for(var i=0; i<this.particles.length; i+=1) {
 
 		if(this.particles[i].isActive === false) {
+
+			this.activeParticles += 1
 
 			p1 = this.particles[i]
 
@@ -312,21 +322,26 @@ GameOfLife.addParticle = function(inherits) {
 
 GameOfLife.updateLines = function() {
 
-	var i
+	var i, points = this.linePoints
+
+	//reset activeLine count
+	this.activeLines = 0
 
 	for(i=0; i<this.linePool.length; i+=2) {
 
-		if( this.linePoints[i] && this.linePoints[i+1] ) {
+		if( points[i] && points[i+1] ) {
 
-			this.linePool[i].vertices[0].x = this.linePoints[i].x
-			this.linePool[i].vertices[0].y = this.linePoints[i].y
-			this.linePool[i].vertices[0].z = this.linePoints[i].z
+			this.linePool[i].vertices[0].x = points[i].x
+			this.linePool[i].vertices[0].y = points[i].y
+			this.linePool[i].vertices[0].z = points[i].z
 
-			this.linePool[i].vertices[1].x = this.linePoints[i+1].x
-			this.linePool[i].vertices[1].y = this.linePoints[i+1].y
-			this.linePool[i].vertices[1].z = this.linePoints[i+1].z
+			this.linePool[i].vertices[1].x = points[i+1].x
+			this.linePool[i].vertices[1].y = points[i+1].y
+			this.linePool[i].vertices[1].z = points[i+1].z
 
 			this.isActive = true
+
+			this.activeLines += 1
 
 			// update vertices
 			this.linePool[i].verticesNeedUpdate = true
@@ -362,7 +377,7 @@ GameOfLife.initLinePool = function() {
         color: 0x0000ff
     })
 
-	for(i=0; i<1000; i++) {
+	for(i=0; i<2000; i++) {
 
 		lineGeometry = new THREE.Geometry()
 
