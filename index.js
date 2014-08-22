@@ -386,39 +386,6 @@ GameOfLife.initVectorPool = function() {
 	console.log(this.vectorPool)
 }
 
-GameOfLife.drawVectorsEach = function(vectors) {
-
-	// remove vectors from scene
-	for(var i=0; i<this.vectorArray.length; i++) {
-		this.scene.remove(this.vectorArray[i])
-	}
-	// clear array
-	this.vectorArray = []
-
-	var vectorGeo, point1, point2, vector
-
-	var vectorMaterial = new THREE.LineBasicMaterial({ color: 'red' })
-
-	for(var i=0; i<vectors.length; i+=2) {
-
-		vectorGeo = new THREE.Geometry()
-
-		point1 = vectors[i] 
-		point2 = vectors[i+1]
-
-		point1 = new THREE.Vector3(point1.x, point1.y, point1.z)
-		point2 = new THREE.Vector3(point2.x, point2.y, point2.z)
-
-		vectorGeo.vertices.push( point1, point2 )
-
-		vector = new THREE.Line( vectorGeo, vectorMaterial )
-
-		this.vectorArray.push(vector)
-
-		this.scene.add(vector)
-	}
-}
-
 // 'settings'
 
 GameOfLife.settings_stop = function() {
@@ -451,81 +418,7 @@ GameOfLife.settings_minDistance = function(val) {
 	this.minDistance = val
 }
 
-// /////////////////////////////////////////////////////////////////////////////
-
-// var geo, line;
-
-// GameOfLife.initVector = function(){
-
-// 	var color
-
-// 	var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors })
-
-// 	geo = new THREE.Geometry()
-
-// 	// initiate vector blob
-// 	for(var i=0; i<2000; i+=2) {
-
-// 		var vert1 = new THREE.Vector3(i,i,i)
-// 		var vert2 = new THREE.Vector3(i,i,i)
-
-// 		geo.vertices.push( vert1, vert2 );
-
-
-// 		color = new THREE.Color( 'red' )
-
-
-// 		geo.colors[i] = color
-// 		geo.colors[i+1] = color
-
-// 		//console.log( JSON.stringify(geo.colors[i]) + ' ' + JSON.stringify(geo.colors[i+1]))
-// 	}
-
-// 	line = new THREE.Line(geo, material)
-
-//     this.scene.add(line)
-// }
-
-// // should be single geometry with alphas
-// GameOfLife.drawVectors = function(vectors){
-
-
-// 	var last, p1, p2, color1, color2
-
-// 	color1 = new THREE.Color( 'blue' )
-// 	color2 = new THREE.Color( 'green' )
-
-// 	for(var i=0; i<2000; i+=1) {
-
-// 		p1 = vectors[i]
-
-// 		if(geo.vertices[i] && p1) {
-
-// 			if(i%2 !== 0) {
-
-// 				geo.vertices[i].set(p1.x, p1.y, p1.z)
-// 				geo.colors[i] = color1
-// 			}
-
-// 			else {
-
-// 				geo.vertices[i].set(p1.x, p1.y, p1.z)
-// 				geo.colors[i] = color2
-// 			}
-
-// 		} else {
-
-// 			//set slack away in 'pool'
-// 			geo.vertices[i].set(i,i,i)
-// 		}
-// 	}
-
-// 	//this should be auto
-// 	line.geometry.verticesNeedUpdate = true;
-// 	line.geometry.colorsNeedUpdate = true;
-// }
-
-// start
+/////////////////////////////////////////////////////////////////
 
 window.o = Object.create(GameOfLife)
 
