@@ -320,35 +320,46 @@ GameOfLife.drawVectors = function() {
 
 		if( this.vectorsPoints[i] && this.vectorsPoints[i+1] ) {
 
-			this.vectorPool[i][0].x = this.vectorsPoints[i].x
-			this.vectorPool[i][0].y = this.vectorsPoints[i].y
-			this.vectorPool[i][0].z = this.vectorsPoints[i].z
+			this.vectorPool[i].vertices[0].x = this.vectorsPoints[i].x
+			this.vectorPool[i].vertices[0].y = this.vectorsPoints[i].y
+			this.vectorPool[i].vertices[0].z = this.vectorsPoints[i].z
 
-			this.vectorPool[i][1].x = this.vectorsPoints[i+1].x
-			this.vectorPool[i][1].y = this.vectorsPoints[i+1].y
-			this.vectorPool[i][1].z = this.vectorsPoints[i+1].z
+			this.vectorPool[i].vertices[1].x = this.vectorsPoints[i+1].x
+			this.vectorPool[i].vertices[1].y = this.vectorsPoints[i+1].y
+			this.vectorPool[i].vertices[1].z = this.vectorsPoints[i+1].z
+
+			this.isActive = true
+
+			// update vertices
+			this.vectorPool[i].verticesNeedUpdate = true
 		}
 
 		else {
 
-			this.vectorPool[i][0].x = 5000
-			this.vectorPool[i][0].y = 5000
-			this.vectorPool[i][0].z = 5000
+			if(this.vectorPool[0].isActive === false) continue
 
-			this.vectorPool[i][1].x = 5000
-			this.vectorPool[i][1].y = 5000
-			this.vectorPool[i][1].z = 5000
+			this.vectorPool[i].vertices[0].x = 5000
+			this.vectorPool[i].vertices[0].y = 5000
+			this.vectorPool[i].vertices[0].z = 5000
+
+			this.vectorPool[i].vertices[1].x = 5000
+			this.vectorPool[i].vertices[1].y = 5000
+			this.vectorPool[i].vertices[1].z = 5000
+
+			this.isActive = false
 
 		}
 
-		this.ddd()
+		// TODO: nope
+		if(this.particles[0].isActive === false) {
+			this.vectorPool[i].verticesNeedUpdate = true
+		}
 	}
 }
 
 GameOfLife.initVectorPool = function() {
 
 	this.vectorPool = []
-	this.lines = []
 
 	var lineGeometry, point1, point2, line
 	var lineMaterial = new THREE.LineBasicMaterial({
@@ -366,23 +377,13 @@ GameOfLife.initVectorPool = function() {
 
 		line = new THREE.Line( lineGeometry, lineMaterial )
 
-		this.vectorPool.push(line.geometry.vertices)
-
-		this.lines.push(line)
+		this.vectorPool.push(line.geometry)
 
 		this.scene.add(line)
 		
 	}
 
 	console.log(this.vectorPool)
-}
-
-// test
-GameOfLife.ddd = function() {
-
-	for(var i=0; i<this.lines.length; i++) {
-		this.lines[i].geometry.verticesNeedUpdate = true
-	}
 }
 
 GameOfLife.drawVectorsEach = function(vectors) {
