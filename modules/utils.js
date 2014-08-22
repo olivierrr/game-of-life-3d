@@ -39,5 +39,11 @@ var getWihtinSpehere = function(max, inherits) {
 	// }
 }
 
+var getRandomNum = function(min, max) {
+
+	return min + (Math.random() * (max - min))
+}
+
 module.exports.calcDistance = calcDistance
 module.exports.getWihtinSpehere = getWihtinSpehere
+module.exports.getRandomNum = getRandomNum

@@ -64,6 +64,9 @@ GameOfLife.init = function() {
 	// sim state
 	this.isRunning = true
 
+	// ssss
+	this.isFirstLoop = true
+
 	// start up animation loop
 	this.animate()
 
@@ -75,6 +78,8 @@ GameOfLife.reset = function() {
 	this.scene.remove(this.particleSystem)
 	this.resetParticles()
 
+	this.isFirstLoop = true
+
 	//line reset
 	//todo
 }
@@ -85,15 +90,15 @@ GameOfLife.newParticle = function() {
     var particle = new THREE.Vector3()
 
     // set particle position
-    particle.x = Math.random() * 2000 - 1000
-    particle.y = Math.random() * 2000 - 1000
-    particle.z = Math.random() * 2000 - 1000
+    particle.x = Utils.getRandomNum(-1000, 1000)
+    particle.y = Utils.getRandomNum(-1000, 1000)
+    particle.z = Utils.getRandomNum(-1000, 1000)
 
     // set particle acceleration
     particle.a = {}
-    particle.a.x = Math.random() - 0.5
-    particle.a.y = Math.random() - 0.5
-    particle.a.z = Math.random() - 0.5
+    particle.a.x = Utils.getRandomNum(-0.5, 0.5)
+    particle.a.y = Utils.getRandomNum(-0.5, 0.5)
+    particle.a.z = Utils.getRandomNum(-0.5, 0.5)
 
     // set state to active
     particle.isActive = true
@@ -107,7 +112,9 @@ GameOfLife.newParticle = function() {
     // add particle to geometry blob
     this.particlesGeo.vertices.push(particle)
 
-    return this.particlesGeo.vertices[this.particlesGeo.vertices.length-1]
+
+    // return new particle
+    return particle
 }
 
 GameOfLife.resetParticles = function() {
@@ -140,19 +147,17 @@ GameOfLife.resetParticles = function() {
 
 GameOfLife.update = function() {
 
-	this.updateParticles()
+	// apply rules
+	this.updateParticles3()
 
-	// draw vectors
-	//this.updateLinesEach(this.linePoints)
+	// set line points
+	this.updateParticles() 
+
+	// set lines from line points
 	this.updateLines()
 
-	// clear vector array for next loop
-	this.linePoints = []
-
-
+	// wall collision
 	this.updateParticles2()
-
-	this.updateParticles3()
 
 }
 
@@ -171,9 +176,9 @@ GameOfLife.animate = function() {
 
 GameOfLife.updateParticles = function() {
 
-	var p1, p2
+	var p1, p2, i, j
 
-	for(var i=0; i<this.particles.length; i++) {
+	for(i=0; i<this.particles.length; i++) {
 
 		// particle one
 		p1 = this.particles[i]
@@ -184,7 +189,7 @@ GameOfLife.updateParticles = function() {
 		// reset neighbor array
 		p1.neighbors = []
 
-		for(var j=0; j<this.particles.length; j++) {
+		for(j=0; j<this.particles.length; j++) {
 
 			// particle two
 			p2 = this.particles[j]
@@ -219,9 +224,9 @@ GameOfLife.updateParticles = function() {
 // update position
 GameOfLife.updateParticles2 = function() {
 
-	var p1
+	var p1, i
 
-	for(var i=0; i<this.particles.length; i++) {
+	for(i=0; i<this.particles.length; i++) {
 
 		p1 = this.particles[i]
 
@@ -246,9 +251,15 @@ GameOfLife.updateParticles2 = function() {
 
 GameOfLife.updateParticles3 = function() {
 
-	var p1
+	var p1, i
 
-	for(var i=0; i<this.particles.length; i++) {
+	if(this.isFirstLoop === true) {
+
+		this.isFirstLoop = false
+		return
+	}
+
+	for(i=0; i<this.particles.length; i++) {
 
 		p1 = this.particles[i]
 
@@ -287,8 +298,10 @@ GameOfLife.removeParticle = function(p1) {
 
 GameOfLife.addParticle = function(inherits) {
 
+	var i, o
+
 	// look for avaliable particle on pool
-	for(var i=0; i<this.particles.length; i+=1) {
+	for(i=0; i<this.particles.length; i+=1) {
 
 		if(this.particles[i].isActive === false) {
 
@@ -303,7 +316,7 @@ GameOfLife.addParticle = function(inherits) {
 			p1.neighbors = []
 
 			//todo FIX THIS
-			var o = Utils.getWihtinSpehere( this.minDistance, inherits )
+			o = Utils.getWihtinSpehere( this.minDistance, inherits )
 
 			p1.x = o.x
 			p1.y = o.y
@@ -363,6 +376,9 @@ GameOfLife.updateLines = function() {
 			this.linePool[i].verticesNeedUpdate = true
 		}
 	}
+
+	// clear vector array for next loop
+	this.linePoints = []
 }
 
 GameOfLife.initLinePool = function() {
@@ -374,15 +390,15 @@ GameOfLife.initLinePool = function() {
 
 	// set line material
 	lineMaterial = new THREE.LineBasicMaterial({
-        color: 0x0000ff
+        color: 'red'
     })
 
 	for(i=0; i<2000; i++) {
 
 		lineGeometry = new THREE.Geometry()
 
-		point1 = new THREE.Vector3(5000 , 5000, 5000)
-		point2 = new THREE.Vector3(5000 , 5000, 5000)
+		point1 = new THREE.Vector3(5000, 5000, 5000)
+		point2 = new THREE.Vector3(5000, 5000, 5000)
 
 		lineGeometry.vertices.push( point1, point2 )
 
