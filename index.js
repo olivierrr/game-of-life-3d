@@ -50,6 +50,8 @@ GameOfLife.init = function() {
 
 	this.isRunning = true
 
+	//this.initVector()
+
 	// start up animation loop
 	this.animate()
 
@@ -177,6 +179,13 @@ GameOfLife.updateParticles = function() {
 				// update neighbor array
 				p1.neighbors.push(p2.id)
 
+				// test
+				// if(vectorsPoints[vectorsPoints.length-2]) {
+				// 	var last = vectorsPoints[vectorsPoints.length-1]
+				// 	var lastlast = vectorsPoints[vectorsPoints.length-2]
+				// 	if( last.x === p2.x || last.y === p2.y || last.z === p2.z ) console.log('awdawdawdwdad')
+				// }
+
 				vectorsPoints.push(p1,p2)
 			}	
 		}
@@ -274,6 +283,7 @@ GameOfLife.addParticle = function(inherits) {
 
 			p1.neighbors = []
 
+			//todo FIX THIS
 			p1.x = Math.floor((Math.random() * -Math.abs(inherits.x)) + inherits.x)
 			p1.y = Math.floor((Math.random() * -Math.abs(inherits.y)) + inherits.y)
 			p1.z = Math.floor((Math.random() * -Math.abs(inherits.z)) + inherits.z)
@@ -354,40 +364,28 @@ GameOfLife.settings_minDistance = function(val) {
 	this.minDistance = val
 }
 
-// start
+// /////////////////////////////////////////////////////////////////////////////
 
-window.o = Object.create(GameOfLife)
-
-window.o.init()
-
-///////////////////////////////////////////////////////////////////////////////
-// vectors should be a single object 
-///////////////////////////////////////////////////////////////////////////////
 // var geo, line;
 
-// function initVector(){
+// GameOfLife.initVector = function(){
 
-// 	var color, t = 1
+// 	var color
 
 // 	var material = new THREE.LineBasicMaterial({ vertexColors: THREE.VertexColors })
 
 // 	geo = new THREE.Geometry()
 
 // 	// initiate vector blob
-// 	for(var i=0; i<1000; i+=2) {
+// 	for(var i=0; i<2000; i+=2) {
 
 // 		var vert1 = new THREE.Vector3(i,i,i)
 // 		var vert2 = new THREE.Vector3(i,i,i)
 
 // 		geo.vertices.push( vert1, vert2 );
 
-// 		if(t === 1) {
-// 			color = new THREE.Color( 'red' )
-// 			t = 0
-// 		} else {
-// 			color = new THREE.Color( 'blue' )
-// 			t = 1
-// 		}
+
+// 		color = new THREE.Color( 'red' )
 
 
 // 		geo.colors[i] = color
@@ -396,40 +394,42 @@ window.o.init()
 // 		//console.log( JSON.stringify(geo.colors[i]) + ' ' + JSON.stringify(geo.colors[i+1]))
 // 	}
 
-// 	line = new THREE.Line(geo, material);
+// 	line = new THREE.Line(geo, material)
 
-//     scene.add(line);
-
-//     console.log(geo)
+//     this.scene.add(line)
 // }
 
 // // should be single geometry with alphas
-// function drawVectors(vectors) {
+// GameOfLife.drawVectors = function(vectors){
 
-// 	//console.log(vectors.length)
-// 	console.log(vectors)
 
-// 	var last, p1, p2
+// 	var last, p1, p2, color1, color2
 
-// 	for(var i=0; i<1000; i+=2) {
+// 	color1 = new THREE.Color( 'blue' )
+// 	color2 = new THREE.Color( 'green' )
+
+// 	for(var i=0; i<2000; i+=1) {
 
 // 		p1 = vectors[i]
-// 		p2 = vectors[i+1]
 
-// 		if(geo.vertices[i] && geo.vertices[i+1] && p1 && p2) {
+// 		if(geo.vertices[i] && p1) {
 
-// 			//if(i!==0) geo.vertices[i].set(last.x, last.y, last.z)
-// 			geo.vertices[i].set(p1.x, p1.y, p1.z)
+// 			if(i%2 !== 0) {
 
-// 			geo.vertices[i+1].set(p2.x, p2.y, p2.z)
+// 				geo.vertices[i].set(p1.x, p1.y, p1.z)
+// 				geo.colors[i] = color1
+// 			}
 
-// 			last = p2
+// 			else {
+
+// 				geo.vertices[i].set(p1.x, p1.y, p1.z)
+// 				geo.colors[i] = color2
+// 			}
 
 // 		} else {
 
 // 			//set slack away in 'pool'
 // 			geo.vertices[i].set(i,i,i)
-// 			geo.vertices[i+1].set(i,i,i)
 // 		}
 // 	}
 
@@ -437,3 +437,10 @@ window.o.init()
 // 	line.geometry.verticesNeedUpdate = true;
 // 	line.geometry.colorsNeedUpdate = true;
 // }
+
+// start
+
+window.o = Object.create(GameOfLife)
+
+window.o.init()
+
