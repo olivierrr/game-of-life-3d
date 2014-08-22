@@ -129,7 +129,6 @@ GameOfLife.update = function() {
 	this.updateParticles()
 	this.updateParticles2()
 	this.updateParticles3()
-
 }
 
 GameOfLife.animate = function() {
@@ -284,9 +283,11 @@ GameOfLife.addParticle = function(inherits) {
 			p1.neighbors = []
 
 			//todo FIX THIS
-			p1.x = Math.floor((Math.random() * -Math.abs(inherits.x)) + inherits.x)
-			p1.y = Math.floor((Math.random() * -Math.abs(inherits.y)) + inherits.y)
-			p1.z = Math.floor((Math.random() * -Math.abs(inherits.z)) + inherits.z)
+			var o = Utils.getWihtinSpehere(100, inherits)
+
+			p1.x = o.x
+			p1.y = o.y
+			p1.z = o.z
 
 			return p1
 		}
