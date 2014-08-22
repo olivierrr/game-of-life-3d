@@ -27,6 +27,12 @@ GameOfLife.init = function() {
 	// holds all vectors
 	this.vectorArray = []
 
+	// holds vect points
+	this.vectorsPoints = []
+
+	// vector pool // test
+	this.vectorPool = []
+
 	// particle cloud
 	this.particleSystem
 
@@ -41,6 +47,8 @@ GameOfLife.init = function() {
 
 	// reset particles
 	this.resetParticles()
+
+		this.initVectorPool()
 
 	// append scene to dom
 	Dom.init(this.renderer, this.camera)
@@ -127,8 +135,19 @@ GameOfLife.resetParticles = function() {
 GameOfLife.update = function() {
 
 	this.updateParticles()
+
+	// draw vectors
+	//this.drawVectorsEach(this.vectorsPoints)
+	this.drawVectors()
+
+	// clear vector array for next loop
+	this.vectorsPoints = []
+
+
 	this.updateParticles2()
+
 	this.updateParticles3()
+
 }
 
 GameOfLife.animate = function() {
@@ -146,7 +165,7 @@ GameOfLife.animate = function() {
 
 GameOfLife.updateParticles = function() {
 
-	var p1, p2, vectorsPoints = []
+	var p1, p2
 
 	for(var i=0; i<this.particles.length; i++) {
 
@@ -185,16 +204,10 @@ GameOfLife.updateParticles = function() {
 				// 	if( last.x === p2.x || last.y === p2.y || last.z === p2.z ) console.log('awdawdawdwdad')
 				// }
 
-				vectorsPoints.push(p1,p2)
+				this.vectorsPoints.push(p1,p2)
 			}	
 		}
 	}
-
-	// draw vectors
-	this.drawVectorsEach(vectorsPoints)
-
-	// clear vector array for next loop
-	vectorsPoints = []
 }
 
 // update position
@@ -299,6 +312,85 @@ GameOfLife.addParticle = function(inherits) {
 	// if no avaliable partciles in pool
 	// create new particle
 
+}
+
+GameOfLife.drawVectors = function() {
+
+	for(var i=0; i<this.vectorPool.length; i+=2) {
+
+		if( this.vectorsPoints[i] && this.vectorsPoints[i+1] ) {
+
+			this.vectorPool[i][0].x = this.vectorsPoints[i].x
+			this.vectorPool[i][0].y = this.vectorsPoints[i].y
+			this.vectorPool[i][0].z = this.vectorsPoints[i].z
+
+			this.vectorPool[i+1][1].x = this.vectorsPoints[i+1].x
+			this.vectorPool[i+1][1].y = this.vectorsPoints[i+1].y
+			this.vectorPool[i+1][1].z = this.vectorsPoints[i+1].z
+		}
+
+		else {
+
+			this.vectorPool[i][0].x = 999
+			this.vectorPool[i][0].y = 999
+			this.vectorPool[i][0].z = 999
+
+			this.vectorPool[i+1][1].x = 999
+			this.vectorPool[i+1][1].y = 999
+			this.vectorPool[i+1][1].z = 999
+
+		}
+
+		this.ddd()
+	}
+}
+
+GameOfLife.initVectorPool = function() {
+
+	this.vectorPool = []
+	this.lines = []
+
+	var lineGeometry, point1, point2, line
+	var lineMaterial = new THREE.LineBasicMaterial({
+        color: 0x0000ff
+    })
+
+	for(var i=0; i<1000; i++) {
+
+		lineGeometry = new THREE.Geometry()
+
+		point1 = {x:30, y:30, z:30}
+		point2 = {x:100, y:100, z:100}
+
+		point1 = new THREE.Vector3(point1.x, point1.y, point1.z)
+		point2 = new THREE.Vector3(point2.x, point2.y, point2.z)
+
+		lineGeometry.vertices.push( point1, point2 )
+
+		line = new THREE.Line( lineGeometry, lineMaterial )
+
+		this.vectorPool.push(line.geometry.vertices)
+
+		this.lines.push(line) //test
+
+		line.geometry.verticesNeedUpdate = true
+
+		this.scene.add(line)
+
+		// // //
+		
+
+	}
+
+	console.log(this.vectorPool)
+}
+
+// test
+GameOfLife.ddd = function() {
+
+	for(var i=0; i<this.lines.length; i++) {
+		this.lines[i].geometry.verticesNeedUpdate = true
+	}
 }
 
 GameOfLife.drawVectorsEach = function(vectors) {
