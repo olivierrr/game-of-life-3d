@@ -252,7 +252,7 @@ GameOfLife.updateParticles3 = function() {
 
 		else if(p1.neighbors.length === 0) {
 
-			console.log('deleted!')
+			//console.log('deleted!')
 			this.removeParticle(p1)
 			continue
 		}
@@ -272,6 +272,7 @@ GameOfLife.addParticle = function(inherits) {
 
 	// look for avaliable particle on pool
 	for(var i=0; i<this.particles.length; i+=1) {
+
 		if(this.particles[i].isActive === false) {
 
 			p1 = this.particles[i]
@@ -283,7 +284,7 @@ GameOfLife.addParticle = function(inherits) {
 			p1.neighbors = []
 
 			//todo FIX THIS
-			var o = Utils.getWihtinSpehere(100, inherits)
+			var o = Utils.getWihtinSpehere( this.minDistance, inherits )
 
 			p1.x = o.x
 			p1.y = o.y
@@ -293,7 +294,7 @@ GameOfLife.addParticle = function(inherits) {
 		}
 	}
 
-	console.log('no avaliable particles in pool')
+	//console.log('no avaliable particles in pool')
 
 	// if no avaliable partciles in pool
 	// create new particle

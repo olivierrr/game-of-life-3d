@@ -9,9 +9,22 @@ var getWihtinSpehere = function(max, inherits) {
 	
 	var o = {}
 
-	o.x = Math.floor((Math.random() * -Math.abs(inherits.x)) + inherits.x)
-	o.y = Math.floor((Math.random() * -Math.abs(inherits.y)) + inherits.y)
-	o.z = Math.floor((Math.random() * -Math.abs(inherits.z)) + inherits.z)
+	var x_max = (max + inherits.x) 
+	var x_min = (max + inherits.x)*2
+	var y_max = (max + inherits.y)
+	var y_min = (max + inherits.y)*2
+	var z_max = (max + inherits.z)
+	var z_min = (max + inherits.z)*2
+
+	//Math.random() * 2000 - 1000
+
+	o.x = Math.random() * x_min - x_max
+	o.y = Math.random() * y_min - y_max
+	o.z = Math.random() * z_min - z_max
+
+	// console.log(o)
+	// console.log(inherits)
+	// console.log(calcDistance(o,inherits))
 
 	if ( calcDistance(o, inherits) > max ) {
 		o.x = Math.random() * 2000 - 1000
@@ -19,7 +32,10 @@ var getWihtinSpehere = function(max, inherits) {
 		o.z = Math.random() * 2000 - 1000
 		return o
 	}
-	else return o
+	else {
+		console.log('yup')
+		return o
+	}
 }
 
 module.exports.calcDistance = calcDistance
