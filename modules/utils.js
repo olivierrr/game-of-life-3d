@@ -4,39 +4,24 @@ var calcDistance = function(p1,p2) {
 	return o
 }
 
-// 'inherits' = sphere dimmensions
-// todo
-var getWihtinSpehere = function(max, inherits) {
+var getWihtinSpehere = function(center, r, o) {
 
 	var o = {}
+	var min = -Math.abs(r)
+	var max = r
 
-	// var x_max = ((max/3) + inherits.x) 
-	// var x_min = ((max/3) + inherits.x)*2
-	// var y_max = ((max/3) + inherits.y)
-	// var y_min = ((max/3) + inherits.y)*2
-	// var z_max = ((max/3) + inherits.z)
-	// var z_min = ((max/3) + inherits.z)*2
+	do {
+		o.x = getRandomNum(min, max)
+		o.y = getRandomNum(min, max)
+		o.z = getRandomNum(min, max)
 
-	// //Math.random() * 2000 - 1000
+		console.log('don')
 
-	// o.x = Math.random() * x_min - x_max
-	// o.y = Math.random() * y_min - y_max
-	// o.z = Math.random() * z_min - z_max
+	} while (calcDistance(o, center) > r)
 
-	// console.log(o)
-	// console.log(inherits)
-	// console.log(calcDistance(o,inherits))
+	console.log('der')
 
-	//if ( calcDistance(o, inherits) > max ) {
-		o.x = Math.random() * ((inherits.x+max)*2) - (inherits.x+max)
-		o.y = Math.random() * ((inherits.y+max)*2) - (inherits.y+max)
-		o.z = Math.random() * ((inherits.z+max)*2) - (inherits.z+max)
-		return o
-	//}
-	// else {
-	// 	console.log('yup')
-	// 	return o
-	// }
+	return o
 }
 
 var getRandomNum = function(min, max) {

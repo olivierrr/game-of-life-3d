@@ -80,9 +80,6 @@ function datgui(){
 	update()
 
 	window.setInterval(update, 100)
-
-	console.log(f3)
-
 }
 
 function stats() {

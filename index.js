@@ -90,9 +90,12 @@ GameOfLife.newParticle = function() {
     var particle = new THREE.Vector3()
 
     // set particle position
-    particle.x = Utils.getRandomNum(-1000, 1000)
-    particle.y = Utils.getRandomNum(-1000, 1000)
-    particle.z = Utils.getRandomNum(-1000, 1000)
+    var o = Utils.getWihtinSpehere({x:0,y:0,z:0}, 800)
+
+    //console.log(o)
+    particle.x = o.x
+    particle.y = o.y
+    particle.z = o.z
 
     // set particle acceleration
     particle.a = {}
@@ -135,7 +138,7 @@ GameOfLife.resetParticles = function() {
     this.particleSystem = new THREE.PointCloud(this.particlesGeo, particleMaterial)
 
     // enables particle updating
-    this.particleSystem.sortParticles = true
+	this.particleSystem.sortParticles = true
 
     // set particle array
     this.particles = this.particlesGeo.vertices
@@ -148,7 +151,7 @@ GameOfLife.resetParticles = function() {
 GameOfLife.update = function() {
 
 	// apply rules
-	this.updateParticles3()
+	//this.updateParticles3()
 
 	// set line points
 	this.updateParticles() 
@@ -315,8 +318,7 @@ GameOfLife.addParticle = function(inherits) {
 
 			p1.neighbors = []
 
-			//todo FIX THIS
-			o = Utils.getWihtinSpehere( this.minDistance, inherits )
+			o = Utils.getWihtinSpehere({x:0,y:0,z:0}, 800)
 
 			p1.x = o.x
 			p1.y = o.y
