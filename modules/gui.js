@@ -22,10 +22,12 @@ var g = function() {
 	//this.startingParticleCount = 200
 
 	// f3 'stats'
-	this.particleCount = "aNumber"
-	this.lineCount = "aNumber"
-	this.particlePoolSize = "aNumber"
-	this.linePoolSize = "aNumber"
+	this.particleCount = 'aNumber'
+	this.lineCount = 'aNumber'
+	// this.particlePoolSize = 'aNumber'
+	// this.linePoolSize = 'aNumber'
+	this.deadParticles = 'aNumber'
+	this.particlesBorn = 'aNumber'
 	
 	// f4 'rules'
 	this.or_more_dies = 5
@@ -58,8 +60,10 @@ function datgui(){
  	var f3 = gui.addFolder('stats')
  	f3.add(text, 'particleCount')
  	f3.add(text, 'lineCount')
- 	f3.add(text, 'particlePoolSize')
- 	f3.add(text, 'linePoolSize')
+ 	// f3.add(text, 'particlePoolSize')
+ 	// f3.add(text, 'linePoolSize')
+ 	f3.add(text, 'deadParticles')
+ 	f3.add(text, 'particlesBorn')
 
 
  	var f4 = gui.addFolder('rules')
@@ -102,8 +106,10 @@ function datgui(){
 	  
 	    text.particleCount = o.activeParticles
 	    text.lineCount = o.activeLines
-	    text.particlePoolSize = o.particles.length
-	    text.linePoolSize = o.linePool.length
+	    // text.particlePoolSize = o.particles.length
+	    // text.linePoolSize = o.linePool.length
+	    text.deadParticles = o.deadParticlesCount
+	    text.particlesBorn = o.particlesBornCount
 
 	    // Iterate over all controllers
 	  	for (var i in f3.__controllers) {

@@ -14,6 +14,10 @@ GameOfLife.init = function() {
 	this.minDistance = 300
 	this.maxParticleCount = 200
 
+	// 'stats'
+	this.deadParticlesCount = 0
+	this.particlesBornCount = 0
+
 	// 'rules'
 	this.or_more_dies = 5
 	this.or_less_dies = 0
@@ -83,6 +87,9 @@ GameOfLife.init = function() {
 
 GameOfLife.reset = function() {
 
+	this.deadParticlesCount = 0
+	this.particlesBornCount = 0
+
 	//particle reset
 	this.scene.remove(this.particleSystem)
 	this.resetParticles()
@@ -97,6 +104,8 @@ GameOfLife.reset = function() {
 }
 
 GameOfLife.newParticle = function() {
+
+	this.particlesBornCount += 1
 
 	// new particle
     var particle = new THREE.Vector3()
@@ -183,9 +192,9 @@ GameOfLife.animate = function() {
 
 	this.renderer.render( this.scene, this.camera )
 
-	Gui.step_end()
-
 	requestAnimationFrame( this.animate.bind(this) )
+
+	Gui.step_end()
 }
 
 GameOfLife.updateParticles = function() {
@@ -288,15 +297,19 @@ GameOfLife.updateParticles3 = function() {
 			continue
 		}
 
-		else if(p1.neighbors.length >= this.or_more_dies) {
+		else if(p1.neighbors.length <= this.or_more_dies) {
 
 			this.removeParticle(p1)
+
+			this.deadParticlesCount +=1
 			continue
 		}
 
-		else if(p1.neighbors.length <= this.or_less_dies) {
+		else if(p1.neighbors.length >= this.or_less_dies) {
 
 			this.removeParticle(p1)
+
+			this.deadParticlesCount +=1
 			continue
 		}
 	}
@@ -319,6 +332,8 @@ GameOfLife.addParticle = function(inherits) {
 	for(i=0; i<this.particles.length; i+=1) {
 
 		if(this.particles[i].isActive === false) {
+
+			this.particlesBornCount += 1
 
 			this.activeParticles += 1
 
@@ -466,18 +481,20 @@ GameOfLife.settings_worldRadius = function(value) {
 GameOfLife.settings_or_less_dies = function(value) {
 
 	this.or_less_dies = value
+	console.log(this.or_less_dies + ' or less')
 }
 
 GameOfLife.settings_or_more_dies = function(value) {
 
 	this.or_more_dies = value
+	console.log(this.or_more_dies + ' or more')
 }
 
 GameOfLife.settings_equals_offspring = function(value) {
 
 	this.equals_offspring = value
+	console.log(this.equals_offspring + ' e')
 }
-
 
 /////////////////////////////////////////////////////////////////
 
