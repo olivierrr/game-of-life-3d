@@ -15,6 +15,7 @@ GameOfLife.init = function() {
 	this.particlePoolSize = 200
 	this.linePoolSize = 2000
 	this.worldRadius = 800
+	this.spawnDistance = 200
 
 	// 'rules'
 	this.or_more_dies = 5
@@ -321,7 +322,7 @@ GameOfLife.addParticle = function(inherits) {
 
 			p1.neighbors = []
 
-			o = Utils.getWihtinSpehere(inherits, 200)
+			o = Utils.getWihtinSpehere(inherits, this.spawnDistance)
 
 			p1.x = o.x
 			p1.y = o.y
@@ -452,6 +453,11 @@ GameOfLife.settings_particlePoolSize = function(value) {
 GameOfLife.settings_minDistance = function(value) {
 
 	this.minDistance = value
+}
+
+GameOfLife.settings_spawnDistance = function(value) {
+
+	this.spawnDistance = value
 }
 
 GameOfLife.settings_worldRadius = function(value) {
