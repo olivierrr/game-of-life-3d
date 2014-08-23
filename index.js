@@ -16,6 +16,7 @@ GameOfLife.init = function() {
 	this.linePoolSize = 2000
 	this.worldRadius = 800
 	this.spawnDistance = 200
+	this.particleAcceleration = 0.5
 
 	// 'rules'
 	this.or_more_dies = 5
@@ -101,11 +102,14 @@ GameOfLife.newParticle = function() {
     particle.y = o.y
     particle.z = o.z
 
+    var a = this.particleAcceleration
+    var aM = -Math.abs(this.particleAcceleration)
+
     // set particle acceleration
     particle.a = {}
-    particle.a.x = Utils.getRandomNum(-0.5, 0.5)
-    particle.a.y = Utils.getRandomNum(-0.5, 0.5)
-    particle.a.z = Utils.getRandomNum(-0.5, 0.5)
+    particle.a.x = Utils.getRandomNum(aM, a)
+    particle.a.y = Utils.getRandomNum(aM, a)
+    particle.a.z = Utils.getRandomNum(aM, a)
 
     // set state to active
     particle.isActive = true
@@ -195,8 +199,10 @@ GameOfLife.updateParticles = function() {
 		// check if is active
 		if(p1.isActive === false) continue
 
-		// reset neighbor array
-		p1.neighbors = []
+		// clear neighbor array
+		while (p1.neighbors.length > 0) {
+  			p1.neighbors.pop()
+		}
 
 		for(j=0; j<this.particlePool.length; j++) {
 
@@ -217,15 +223,9 @@ GameOfLife.updateParticles = function() {
 				// update neighbor array
 				p1.neighbors.push(p2.id)
 
-				// test
-				// if(linePoints[linePoints.length-2]) {
-				// 	var last = linePoints[linePoints.length-1]
-				// 	var lastlast = linePoints[linePoints.length-2]
-				// 	if( last.x === p2.x || last.y === p2.y || last.z === p2.z ) console.log('awdawdawdwdad')
-				// }
-
+				// add points to linePoints array
 				this.linePoints.push(p1,p2)
-			}	
+			}
 		}
 	}
 }
@@ -470,6 +470,10 @@ GameOfLife.settings_linePoolSize = function(value) {
 	this.linePoolSize = value
 }
 
+GameOfLife.settings_particleAcceleration = function(value) {
+
+	this.particleAcceleration = value
+}
 
 // rules
 GameOfLife.settings_or_less_dies = function(value) {

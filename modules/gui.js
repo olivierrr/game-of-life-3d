@@ -20,6 +20,7 @@ var g = function() {
 	this.worldRadius = 800
 	this.linePoolSize = 2000
 	this.spawnDistance = 200
+	this.particleAcceleration = 0.5
 	//this.simSpeed = 1
 	//this.startingParticleCount = 200
 
@@ -59,6 +60,7 @@ function datgui(){
  	//var startingParticleCount = f2.add(text, 'startingParticleCount', 10, 1000)
  	var linePoolSize = f2.add(text, 'linePoolSize', 0, 10000).step(100)
  	var spawnDistance = f2.add(text, 'spawnDistance', 0, 500).step(10)
+ 	var particleAcceleration = f2.add(text, 'particleAcceleration', 0, 10).step(0.1)
 
 
  	var f3 = gui.addFolder('stats')
@@ -98,6 +100,9 @@ function datgui(){
 	})
 	spawnDistance.onChange(function(value) {
 		o.settings_spawnDistance(value)
+	})
+	particleAcceleration.onChange(function(value) {
+		o.settings_particleAcceleration(value)
 	})
 
 	// f4 events
