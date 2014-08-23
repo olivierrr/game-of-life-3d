@@ -14,10 +14,7 @@ GameOfLife.init = function() {
 	this.minDistance = 300
 	this.particlePoolSize = 200
 	this.linePoolSize = 2000
-
-	// 'stats'
-	this.deadParticlesCount = 0
-	this.particlesBornCount = 0
+	this.worldRadius = 800
 
 	// 'rules'
 	this.or_more_dies = 5
@@ -34,11 +31,9 @@ GameOfLife.init = function() {
 	this.renderer = new THREE.WebGLRenderer()
 	this.renderer.setSize( window.innerWidth, window.innerHeight )
 
+
+	// holds line instances
 	this.LINES = []
-
-	// world size
-	this.worldRadius = 800
-
 
 	// holds line points
 	this.linePoints = []
@@ -46,27 +41,12 @@ GameOfLife.init = function() {
 	// line pool 
 	this.linePool = []
 
-	// holds active line count
-	this.activeLines
-
-	// populate linePool array
-	this.initLinePool()
-
 
 	// particle cloud
 	this.particleSystem
 
 	// particles geometry blob
 	this.particlesGeo
-
-	// holds all particles
-	this.particles = []
-
-	// holds active particle count
-	this.activeParticles
-
-	// populate particles array
-	this.resetParticles()
 
 
 	// append scene to dom
@@ -79,8 +59,7 @@ GameOfLife.init = function() {
 	// sim state
 	this.isRunning = true
 
-	// ssss
-	this.isFirstLoop = true
+	this.reset()
 
 	// start up animation loop
 	this.animate()
@@ -89,24 +68,22 @@ GameOfLife.init = function() {
 
 GameOfLife.reset = function() {
 
+	// 'stats'
+	this.activeLines = 0
+	this.activeParticles = 0
 	this.deadParticlesCount = 0
 	this.particlesBornCount = 0
 
-	//particle reset
-	this.scene.remove(this.particleSystem)
+	// particles reset
+	this.particlePool = []
 	this.resetParticles()
 
-	//this.linePoints = []
-	//this.linePool = []
-	this.initLinePool()
-
-	this.isFirstLoop = true
+	// lines reset
+	this.resetLines()
 
 	this.updateParticles()
+	this.updateParticles2()
 	this.updateLines()
-
-	//line reset
-	//todo
 }
 
 GameOfLife.newParticle = function() {
@@ -150,6 +127,8 @@ GameOfLife.resetParticles = function() {
 	
 	var particleMaterial
 
+	this.scene.remove(this.particleSystem)
+
 	this.activeParticles = this.particlePoolSize
 
     this.particlesGeo = new THREE.Geometry()
@@ -167,7 +146,7 @@ GameOfLife.resetParticles = function() {
 	this.particleSystem.sortParticles = true
 
     // set particle array
-    this.particles = this.particlesGeo.vertices
+    this.particlePool = this.particlesGeo.vertices
 
     // add particle system to scene
     this.scene.add(this.particleSystem)
@@ -207,10 +186,10 @@ GameOfLife.updateParticles = function() {
 
 	var p1, p2, i, j
 
-	for(i=0; i<this.particles.length; i++) {
+	for(i=0; i<this.particlePool.length; i++) {
 
 		// particle one
-		p1 = this.particles[i]
+		p1 = this.particlePool[i]
 
 		// check if is active
 		if(p1.isActive === false) continue
@@ -218,10 +197,10 @@ GameOfLife.updateParticles = function() {
 		// reset neighbor array
 		p1.neighbors = []
 
-		for(j=0; j<this.particles.length; j++) {
+		for(j=0; j<this.particlePool.length; j++) {
 
 			// particle two
-			p2 = this.particles[j]
+			p2 = this.particlePool[j]
 
 			// check if is active
 			if(p2.isActive === false) continue
@@ -255,9 +234,9 @@ GameOfLife.updateParticles2 = function() {
 
 	var p1, i
 
-	for(i=0; i<this.particles.length; i++) {
+	for(i=0; i<this.particlePool.length; i++) {
 
-		p1 = this.particles[i]
+		p1 = this.particlePool[i]
 
 		// check if is active
 		if(p1.isActive === false) continue
@@ -282,17 +261,11 @@ GameOfLife.updateParticles2 = function() {
 
 GameOfLife.updateParticles3 = function() {
 
-	if(this.isFirstLoop === true) {
-
-		this.isFirstLoop = false
-		return
-	}
-
 	var p1, neighbors, i
 
-	for(i=0; i<this.particles.length; i++) {
+	for(i=0; i<this.particlePool.length; i++) {
 
-		p1 = this.particles[i]
+		p1 = this.particlePool[i]
 		neighbors = p1.neighbors.length
 
 		// check if is active
@@ -333,14 +306,14 @@ GameOfLife.addParticle = function(inherits) {
 	var i, o, p1
 
 	// look for avaliable particle on pool
-	for(i=0; i<this.particles.length; i+=1) {
+	for(i=0; i<this.particlePool.length; i+=1) {
 
-		if(this.particles[i].isActive === false) {
+		if(this.particlePool[i].isActive === false) {
 
 			this.particlesBornCount += 1
 			this.activeParticles += 1
 
-			p1 = this.particles[i]
+			p1 = this.particlePool[i]
 
 			p1.isActive = true
 
@@ -358,7 +331,7 @@ GameOfLife.addParticle = function(inherits) {
 		}
 	}
 
-	//console.log('no avaliable particles in pool')
+	//console.log('no avaliable particlePool in pool')
 
 	// if no avaliable partciles in pool
 	// create new particle
@@ -411,7 +384,7 @@ GameOfLife.updateLines = function() {
 	this.linePoints = []
 }
 
-GameOfLife.initLinePool = function() {
+GameOfLife.resetLines = function() {
 
 	var lineGeometry, lineMaterial, point1, point2, line, i
 
