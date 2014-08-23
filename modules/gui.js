@@ -16,8 +16,9 @@ var g = function() {
 
 	// f2 'settings'
 	this.minDistance = 300
-	this.maxParticleCount = 200
+	this.particlePoolSize = 200
 	this.worldRadius = 800
+	this.linePoolSize = 2000
 	//this.simSpeed = 1
 	//this.startingParticleCount = 200
 
@@ -52,9 +53,10 @@ function datgui(){
  	var f2 = gui.addFolder('settings')
  	//var simSpeed = f2.add(text, 'simSpeed', 0, 10).step(1)
  	var minDistance = f2.add(text, 'minDistance', 100, 1000).step(10)
- 	var maxParticleCount = f2.add(text, 'maxParticleCount', 10, 1000).step(50)
+ 	var particlePoolSize = f2.add(text, 'particlePoolSize', 10, 1000).step(50)
  	var worldRadius = f2.add(text, 'worldRadius', 300, 1000)
  	//var startingParticleCount = f2.add(text, 'startingParticleCount', 10, 1000)
+ 	var linePoolSize = f2.add(text, 'linePoolSize', 0, 5000).step(100)
 
 
  	var f3 = gui.addFolder('stats')
@@ -79,15 +81,18 @@ function datgui(){
 	f4.open()
 
 
- 	// events
+ 	// f3 events
  	minDistance.onChange(function(value) {
 		o.settings_minDistance(value)
 	})
-	maxParticleCount.onChange(function(value) {
-		o.settings_maxParticleCount(value)
+	particlePoolSize.onChange(function(value) {
+		o.settings_particlePoolSize(value)
 	})
 	worldRadius.onChange(function(value) {
 		o.settings_worldRadius(value)
+	})
+	linePoolSize.onChange(function(value) {
+		o.settings_linePoolSize(value)
 	})
 
 	// f4 events

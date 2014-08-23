@@ -12,7 +12,8 @@ GameOfLife.init = function() {
 
 	// 'setings'
 	this.minDistance = 300
-	this.maxParticleCount = 200
+	this.particlePoolSize = 200
+	this.linePoolSize = 2000
 
 	// 'stats'
 	this.deadParticlesCount = 0
@@ -33,6 +34,7 @@ GameOfLife.init = function() {
 	this.renderer = new THREE.WebGLRenderer()
 	this.renderer.setSize( window.innerWidth, window.innerHeight )
 
+	this.LINES = []
 
 	// world size
 	this.worldRadius = 800
@@ -94,6 +96,10 @@ GameOfLife.reset = function() {
 	this.scene.remove(this.particleSystem)
 	this.resetParticles()
 
+	//this.linePoints = []
+	//this.linePool = []
+	this.initLinePool()
+
 	this.isFirstLoop = true
 
 	this.updateParticles()
@@ -144,12 +150,12 @@ GameOfLife.resetParticles = function() {
 	
 	var particleMaterial
 
-	this.activeParticles = this.maxParticleCount
+	this.activeParticles = this.particlePoolSize
 
     this.particlesGeo = new THREE.Geometry()
 
     // create particles with random position values
-    for (var i = 0; i < this.maxParticleCount; i++) {
+    for (var i = 0; i < this.particlePoolSize; i++) {
         this.newParticle()
     }
 
@@ -276,40 +282,37 @@ GameOfLife.updateParticles2 = function() {
 
 GameOfLife.updateParticles3 = function() {
 
-	var p1, i
-
 	if(this.isFirstLoop === true) {
 
 		this.isFirstLoop = false
 		return
 	}
 
+	var p1, neighbors, i
+
 	for(i=0; i<this.particles.length; i++) {
 
 		p1 = this.particles[i]
+		neighbors = p1.neighbors.length
 
 		// check if is active
 		if(p1.isActive === false) continue
 
-		if(p1.neighbors.length >= this.equals_offspring) {
+		if(neighbors >= this.equals_offspring) {
 			
 			this.addParticle(p1)
 			continue
 		}
 
-		else if(p1.neighbors.length <= this.or_more_dies) {
+		else if(neighbors <= this.or_more_dies) {
 
 			this.removeParticle(p1)
-
-			this.deadParticlesCount +=1
 			continue
 		}
 
-		else if(p1.neighbors.length >= this.or_less_dies) {
+		else if(neighbors >= this.or_less_dies) {
 
 			this.removeParticle(p1)
-
-			this.deadParticlesCount +=1
 			continue
 		}
 	}
@@ -317,6 +320,7 @@ GameOfLife.updateParticles3 = function() {
 
 GameOfLife.removeParticle = function(p1) {
 
+	this.deadParticlesCount +=1
 	this.activeParticles -= 1
 
 	p1.set(5000, 5000, 5000)
@@ -326,7 +330,7 @@ GameOfLife.removeParticle = function(p1) {
 
 GameOfLife.addParticle = function(inherits) {
 
-	var i, o
+	var i, o, p1
 
 	// look for avaliable particle on pool
 	for(i=0; i<this.particles.length; i+=1) {
@@ -334,7 +338,6 @@ GameOfLife.addParticle = function(inherits) {
 		if(this.particles[i].isActive === false) {
 
 			this.particlesBornCount += 1
-
 			this.activeParticles += 1
 
 			p1 = this.particles[i]
@@ -400,7 +403,6 @@ GameOfLife.updateLines = function() {
 
 			// update vertices
 			this.linePool[i].verticesNeedUpdate = true
-
 		}
 
 	}
@@ -416,12 +418,18 @@ GameOfLife.initLinePool = function() {
 	// clear vector pool
 	this.linePool = []
 
+	// remove lines previous lines from scene
+	for(var k=0; k<this.LINES.length; k++) {
+		this.scene.remove(this.LINES[k])
+	}
+	this.LINES = []
+
 	// set line material
 	lineMaterial = new THREE.LineBasicMaterial({
         color: 'red'
     })
 
-	for(i=0; i<2000; i++) {
+	for(i=0; i<this.linePoolSize; i++) {
 
 		lineGeometry = new THREE.Geometry()
 
@@ -433,6 +441,8 @@ GameOfLife.initLinePool = function() {
 		line = new THREE.Line( lineGeometry, lineMaterial )
 
 		this.linePool.push(line.geometry)
+
+		this.LINES.push(line)
 
 		this.scene.add(line)
 		
@@ -461,9 +471,9 @@ GameOfLife.settings_reset = function() {
 	this.reset()
 }
 
-GameOfLife.settings_maxParticleCount = function(value) {
+GameOfLife.settings_particlePoolSize = function(value) {
 
-	this.maxParticleCount = value
+	this.particlePoolSize = value
 }
 
 GameOfLife.settings_minDistance = function(value) {
@@ -474,6 +484,11 @@ GameOfLife.settings_minDistance = function(value) {
 GameOfLife.settings_worldRadius = function(value) {
 
 	this.worldRadius = value
+}
+
+GameOfLife.settings_linePoolSize = function(value) {
+
+	this.linePoolSize = value
 }
 
 
@@ -501,4 +516,3 @@ GameOfLife.settings_equals_offspring = function(value) {
 window.o = Object.create(GameOfLife)
 
 window.o.init()
-
