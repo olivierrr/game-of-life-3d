@@ -20,7 +20,7 @@ var g = function() {
 	this.worldRadius = 800
 	this.linePoolSize = 2000
 	this.spawnDistance = 200
-	this.particleAcceleration = 0.5
+	this.particleAcceleration = 4
 	//this.simSpeed = 1
 	//this.startingParticleCount = 200
 
@@ -31,6 +31,7 @@ var g = function() {
 	// this.linePoolSize = 'aNumber'
 	this.deadParticles = 'aNumber'
 	this.particlesBorn = 'aNumber'
+	this.generations = 'aNumber'
 	
 	// f4 'rules'
 	this.or_more_dies = 5
@@ -70,7 +71,7 @@ function datgui(){
  	// f3.add(text, 'linePoolSize')
  	f3.add(text, 'deadParticles')
  	f3.add(text, 'particlesBorn')
-
+ 	f3.add(text, 'generations')
 
  	var f4 = gui.addFolder('rules')
  	var or_more_dies = f4.add(text, 'or_more_dies', 0, 10).step(1)
@@ -125,6 +126,7 @@ function datgui(){
 	    // text.linePoolSize = o.linePool.length
 	    text.deadParticles = o.deadParticlesCount
 	    text.particlesBorn = o.particlesBornCount
+	    text.generations = o.generations
 
 	    // Iterate over all controllers
 	  	for (var i in f3.__controllers) {

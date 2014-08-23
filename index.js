@@ -16,7 +16,7 @@ GameOfLife.init = function() {
 	this.linePoolSize = 2000
 	this.worldRadius = 800
 	this.spawnDistance = 200
-	this.particleAcceleration = 0.5
+	this.particleAcceleration = 4
 
 	// 'rules'
 	this.or_more_dies = 5
@@ -75,6 +75,7 @@ GameOfLife.reset = function() {
 	this.activeParticles = 0
 	this.deadParticlesCount = 0
 	this.particlesBornCount = 0
+	this.generations = 0
 
 	// particles reset
 	this.particlePool = []
@@ -160,6 +161,8 @@ GameOfLife.resetParticles = function() {
 
 GameOfLife.update = function() {
 
+	this.generations += 1
+
 	// apply rules
 	this.updateParticles3()
 
@@ -178,7 +181,8 @@ GameOfLife.animate = function() {
 
 	Gui.step_begin()
 
-	if(this.isRunning === true) this.update()
+	// is game running && are there active particles
+	if(this.isRunning === true && this.activeParticles !== 0) this.update()
 
 	this.renderer.render( this.scene, this.camera )
 
