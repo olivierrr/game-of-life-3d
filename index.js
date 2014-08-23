@@ -25,6 +25,10 @@ GameOfLife.init = function() {
 	this.renderer.setSize( window.innerWidth, window.innerHeight )
 
 
+	// world size
+	this.worldRadius = 800
+
+
 	// holds line points
 	this.linePoints = []
 
@@ -90,7 +94,7 @@ GameOfLife.newParticle = function() {
     var particle = new THREE.Vector3()
 
     // set particle position
-    var o = Utils.getWihtinSpehere({x:0,y:0,z:0}, 800)
+    var o = Utils.getWihtinSpehere({x:0,y:0,z:0}, this.worldRadius)
 
     //console.log(o)
     particle.x = o.x
@@ -237,12 +241,14 @@ GameOfLife.updateParticles2 = function() {
 		if(p1.isActive === false) continue
 
 		// bounce on wall collision
-		if(p1.x > 1000) p1.a.x = -Math.abs(p1.a.x)
-		if(p1.y > 1000) p1.a.y = -Math.abs(p1.a.y)
-		if(p1.z > 1000) p1.a.z = -Math.abs(p1.a.z)
-		if(p1.x < -1000) p1.a.x = Math.abs(p1.a.x)
-		if(p1.y < -1000) p1.a.y = Math.abs(p1.a.y)
-		if(p1.z < -1000) p1.a.z = Math.abs(p1.a.z)
+		if(Utils.calcDistance(p1, {x:0, y:0, z:0}) > this.worldRadius) {
+			if(p1.x > 0) p1.a.x = -Math.abs(p1.a.x)
+			if(p1.y > 0) p1.a.y = -Math.abs(p1.a.y)
+			if(p1.z > 0) p1.a.z = -Math.abs(p1.a.z)
+			if(p1.x < 0) p1.a.x = Math.abs(p1.a.x)
+			if(p1.y < 0) p1.a.y = Math.abs(p1.a.y)
+			if(p1.z < 0) p1.a.z = Math.abs(p1.a.z)
+		}
 
 		// accelerate
 		p1.x += p1.a.x
@@ -318,7 +324,7 @@ GameOfLife.addParticle = function(inherits) {
 
 			p1.neighbors = []
 
-			o = Utils.getWihtinSpehere({x:0,y:0,z:0}, 800)
+			o = Utils.getWihtinSpehere({x:0,y:0,z:0}, this.worldRadius)
 
 			p1.x = o.x
 			p1.y = o.y

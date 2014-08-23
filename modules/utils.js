@@ -4,24 +4,25 @@ var calcDistance = function(p1,p2) {
 	return o
 }
 
-var getWihtinSpehere = function(center, r, o) {
+var getWihtinSpehere = function(center, radius) {
 
 	var o = {}
-	var min = -Math.abs(r)
-	var max = r
+	var min = -Math.abs(radius)
+	var max = radius
 
 	do {
 		o.x = getRandomNum(min, max)
 		o.y = getRandomNum(min, max)
 		o.z = getRandomNum(min, max)
 
-		console.log('don')
-
-	} while (calcDistance(o, center) > r)
-
-	console.log('der')
+	} while (calcDistance(o, center) > radius)
 
 	return o
+}
+
+var isWithinSphere = function(center, radius) {
+
+	//if()
 }
 
 var getRandomNum = function(min, max) {
