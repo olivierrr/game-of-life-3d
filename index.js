@@ -84,6 +84,9 @@ GameOfLife.reset = function() {
 
 	this.isFirstLoop = true
 
+	this.updateParticles()
+	this.updateLines()
+
 	//line reset
 	//todo
 }
@@ -96,7 +99,6 @@ GameOfLife.newParticle = function() {
     // set particle position
     var o = Utils.getWihtinSpehere({x:0,y:0,z:0}, this.worldRadius)
 
-    //console.log(o)
     particle.x = o.x
     particle.y = o.y
     particle.z = o.z
@@ -323,7 +325,7 @@ GameOfLife.addParticle = function(inherits) {
 
 			p1.neighbors = []
 
-			o = Utils.getWihtinSpehere({x:0,y:0,z:0}, this.worldRadius)
+			o = Utils.getWihtinSpehere(inherits, 200)
 
 			p1.x = o.x
 			p1.y = o.y
@@ -376,15 +378,14 @@ GameOfLife.updateLines = function() {
 
 			this.isActive = false
 
+			// update vertices
+			this.linePool[i].verticesNeedUpdate = true
+
 		}
 
-		// TODO: nope
-		if(this.particles[0].isActive === false) {
-			this.linePool[i].verticesNeedUpdate = true
-		}
 	}
 
-	// clear vector array for next loop
+	// clear line array for next loop
 	this.linePoints = []
 }
 

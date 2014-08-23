@@ -11,9 +11,9 @@ var getWihtinSpehere = function(center, radius) {
 	var max = radius
 
 	do {
-		o.x = getRandomNum(min, max)
-		o.y = getRandomNum(min, max)
-		o.z = getRandomNum(min, max)
+		o.x = getRandomNum(min, max) + center.x
+		o.y = getRandomNum(min, max) + center.y
+		o.z = getRandomNum(min, max) + center.z
 
 	} while (calcDistance(o, center) > radius)
 
