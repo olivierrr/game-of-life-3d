@@ -14,6 +14,11 @@ GameOfLife.init = function() {
 	this.minDistance = 300
 	this.maxParticleCount = 200
 
+	// 'rules'
+	this.or_more_dies = 5
+	this.or_less_dies = 0
+	this.equals_offspring = 1
+
 	// THREE setup (rendered/scene/camera/fog/controls)
 	this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 )
 	this.camera.position.z = 1000
@@ -277,19 +282,19 @@ GameOfLife.updateParticles3 = function() {
 		// check if is active
 		if(p1.isActive === false) continue
 
-		if(p1.neighbors.length > 1) {
+		if(p1.neighbors.length >= this.equals_offspring) {
 			
 			this.addParticle(p1)
 			continue
 		}
 
-		else if(p1.neighbors.length > 5) {
+		else if(p1.neighbors.length >= this.or_more_dies) {
 
 			this.removeParticle(p1)
 			continue
 		}
 
-		else if(p1.neighbors.length === 0) {
+		else if(p1.neighbors.length <= this.or_less_dies) {
 
 			this.removeParticle(p1)
 			continue
@@ -401,7 +406,7 @@ GameOfLife.initLinePool = function() {
         color: 'red'
     })
 
-	for(i=0; i<2000; i++) {
+	for(i=0; i<3000; i++) {
 
 		lineGeometry = new THREE.Geometry()
 
@@ -441,20 +446,38 @@ GameOfLife.settings_reset = function() {
 	this.reset()
 }
 
-GameOfLife.settings_maxParticleCount = function(val) {
+GameOfLife.settings_maxParticleCount = function(value) {
 
-	this.maxParticleCount = val
+	this.maxParticleCount = value
 }
 
-GameOfLife.settings_minDistance = function(val) {
+GameOfLife.settings_minDistance = function(value) {
 
-	this.minDistance = val
+	this.minDistance = value
 }
 
-GameOfLife.settings_worldRadius = function(val) {
+GameOfLife.settings_worldRadius = function(value) {
 
-	this.worldRadius = val
+	this.worldRadius = value
 }
+
+
+// rules
+GameOfLife.settings_or_less_dies = function(value) {
+
+	this.or_less_dies = value
+}
+
+GameOfLife.settings_or_more_dies = function(value) {
+
+	this.or_more_dies = value
+}
+
+GameOfLife.settings_equals_offspring = function(value) {
+
+	this.equals_offspring = value
+}
+
 
 /////////////////////////////////////////////////////////////////
 

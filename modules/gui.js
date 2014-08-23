@@ -13,17 +13,24 @@ var g = function() {
 	this.stop = function() { o.settings_stop() }
 	this.step = function() { o.settings_step() }
 	this.reset = function() { o.settings_reset() }
+	this.simSpeed = 1
 
 	// f2 'settings'
 	this.minDistance = 300
 	this.maxParticleCount = 200
 	this.worldRadius = 800
+	this.startingParticleCount = 200
 
 	// f3 'stats'
 	this.particleCount = "aNumber"
 	this.lineCount = "aNumber"
 	this.particlePoolSize = "aNumber"
 	this.linePoolSize = "aNumber"
+	
+	// f4 'rules'
+	this.or_more_dies = 5
+	this.or_less_dies = 0
+	this.equals_offspring = 1
 
 }
 
@@ -41,9 +48,11 @@ function datgui(){
 
 
  	var f2 = gui.addFolder('settings')
+ 	var simSpeed = f2.add(text, 'simSpeed', 0, 10).step(1)
  	var minDistance = f2.add(text, 'minDistance', 100, 1000).step(10)
  	var maxParticleCount = f2.add(text, 'maxParticleCount', 10, 1000).step(50)
  	var worldRadius = f2.add(text, 'worldRadius', 300, 1000)
+ 	var startingParticleCount = f2.add(text, 'startingParticleCount', 10, 1000)
 
 
  	var f3 = gui.addFolder('stats')
@@ -53,10 +62,17 @@ function datgui(){
  	f3.add(text, 'linePoolSize')
 
 
+ 	var f4 = gui.addFolder('rules')
+ 	var or_more_dies = f4.add(text, 'or_more_dies', 0, 10).step(1)
+ 	var or_less_dies = f4.add(text, 'or_less_dies', 0, 10).step(1)
+ 	var equals_offspring = f4.add(text, 'equals_offspring', 1, 10).step(1)
+
+
 	// open all folder by default
 	f1.open()
 	f2.open()
 	f3.open()
+	f4.open()
 
 
  	// events
@@ -70,6 +86,18 @@ function datgui(){
 		o.settings_worldRadius(value)
 	})
 
+	// f4 events
+	or_more_dies.onChange(function(value) {
+		o.settings_or_more_dies(value)
+	})
+	or_less_dies.onChange(function(value) {
+		o.settings_or_less_dies(value)
+	})
+	equals_offspring.onChange(function(value) {
+		o.settings_equals_offspring(value)
+	})
+
+	// updates stats folder
 	var update = function() {
 	  
 	    text.particleCount = o.activeParticles
