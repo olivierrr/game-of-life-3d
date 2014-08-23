@@ -13,13 +13,13 @@ var g = function() {
 	this.stop = function() { o.settings_stop() }
 	this.step = function() { o.settings_step() }
 	this.reset = function() { o.settings_reset() }
-	this.simSpeed = 1
 
 	// f2 'settings'
 	this.minDistance = 300
 	this.maxParticleCount = 200
 	this.worldRadius = 800
-	this.startingParticleCount = 200
+	//this.simSpeed = 1
+	//this.startingParticleCount = 200
 
 	// f3 'stats'
 	this.particleCount = "aNumber"
@@ -48,11 +48,11 @@ function datgui(){
 
 
  	var f2 = gui.addFolder('settings')
- 	var simSpeed = f2.add(text, 'simSpeed', 0, 10).step(1)
+ 	//var simSpeed = f2.add(text, 'simSpeed', 0, 10).step(1)
  	var minDistance = f2.add(text, 'minDistance', 100, 1000).step(10)
  	var maxParticleCount = f2.add(text, 'maxParticleCount', 10, 1000).step(50)
  	var worldRadius = f2.add(text, 'worldRadius', 300, 1000)
- 	var startingParticleCount = f2.add(text, 'startingParticleCount', 10, 1000)
+ 	//var startingParticleCount = f2.add(text, 'startingParticleCount', 10, 1000)
 
 
  	var f3 = gui.addFolder('stats')
@@ -102,8 +102,8 @@ function datgui(){
 	  
 	    text.particleCount = o.activeParticles
 	    text.lineCount = o.activeLines
-	    text.particlePoolSize = o.linePool.length
-	    text.linePoolSize = o.particles.length
+	    text.particlePoolSize = o.particles.length
+	    text.linePoolSize = o.linePool.length
 
 	    // Iterate over all controllers
 	  	for (var i in f3.__controllers) {

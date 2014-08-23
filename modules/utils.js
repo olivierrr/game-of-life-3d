@@ -15,14 +15,14 @@ var getWihtinSpehere = function(center, radius) {
 		o.y = getRandomNum(min, max) + center.y
 		o.z = getRandomNum(min, max) + center.z
 
-	} while (calcDistance(o, center) > radius)
+	} while (isWithinSphere(o) && calcDistance(o, center) > radius)
 
 	return o
 }
 
-var isWithinSphere = function(center, radius) {
+var isWithinSphere = function(point) {
 
-	//if()
+	return (calcDistance({x:0,y:0,z:0}, point) > 800)
 }
 
 var getRandomNum = function(min, max) {

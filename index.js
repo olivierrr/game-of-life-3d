@@ -23,9 +23,9 @@ GameOfLife.init = function() {
 	this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 )
 	this.camera.position.z = 1000
 	this.controls = new THREE.OrbitControls( this.camera )
-	this.controls.maxDistance = 2500
+	this.controls.maxDistance = 5000
 	this.scene = new THREE.Scene()
-	this.scene.fog = new THREE.FogExp2( 0x000000, 0.0004 )
+	//this.scene.fog = new THREE.FogExp2( 0x000000, 0.0004 )
 	this.renderer = new THREE.WebGLRenderer()
 	this.renderer.setSize( window.innerWidth, window.innerHeight )
 
@@ -406,7 +406,7 @@ GameOfLife.initLinePool = function() {
         color: 'red'
     })
 
-	for(i=0; i<3000; i++) {
+	for(i=0; i<2000; i++) {
 
 		lineGeometry = new THREE.Geometry()
 
