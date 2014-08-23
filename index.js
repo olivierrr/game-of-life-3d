@@ -155,7 +155,7 @@ GameOfLife.resetParticles = function() {
 GameOfLife.update = function() {
 
 	// apply rules
-	//this.updateParticles3()
+	this.updateParticles3()
 
 	// set line points
 	this.updateParticles() 
@@ -289,7 +289,6 @@ GameOfLife.updateParticles3 = function() {
 
 		else if(p1.neighbors.length === 0) {
 
-			//console.log('deleted!')
 			this.removeParticle(p1)
 			continue
 		}
@@ -449,6 +448,11 @@ GameOfLife.settings_maxParticleCount = function(val) {
 GameOfLife.settings_minDistance = function(val) {
 
 	this.minDistance = val
+}
+
+GameOfLife.settings_worldRadius = function(val) {
+
+	this.worldRadius = val
 }
 
 /////////////////////////////////////////////////////////////////

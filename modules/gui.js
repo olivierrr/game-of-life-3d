@@ -17,6 +17,7 @@ var g = function() {
 	// f2 'settings'
 	this.minDistance = 300
 	this.maxParticleCount = 200
+	this.worldRadius = 800
 
 	// f3 'stats'
 	this.particleCount = "aNumber"
@@ -42,6 +43,7 @@ function datgui(){
  	var f2 = gui.addFolder('settings')
  	var minDistance = f2.add(text, 'minDistance', 100, 1000).step(10)
  	var maxParticleCount = f2.add(text, 'maxParticleCount', 10, 1000).step(50)
+ 	var worldRadius = f2.add(text, 'worldRadius', 300, 1000)
 
 
  	var f3 = gui.addFolder('stats')
@@ -49,6 +51,7 @@ function datgui(){
  	f3.add(text, 'lineCount')
  	f3.add(text, 'particlePoolSize')
  	f3.add(text, 'linePoolSize')
+
 
 	// open all folder by default
 	f1.open()
@@ -62,6 +65,9 @@ function datgui(){
 	})
 	maxParticleCount.onChange(function(value) {
 		o.settings_maxParticleCount(value)
+	})
+	worldRadius.onChange(function(value) {
+		o.settings_worldRadius(value)
 	})
 
 	var update = function() {
