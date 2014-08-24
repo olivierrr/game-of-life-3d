@@ -352,21 +352,22 @@ GameOfLife.updateLines = function() {
 
 	while(i--) {
 
-		if(this.linePoints[i+1]) {
+		if(this.linePoints[i]) {
 
 			// move point to linePool
-			this.linePool[i].vertices[0].x = this.linePoints[0].x
-			this.linePool[i].vertices[0].y = this.linePoints[0].y
-			this.linePool[i].vertices[0].z = this.linePoints[0].z
+			this.linePool[i].vertices[0].x = this.linePoints[this.linePoints.length-1].x
+			this.linePool[i].vertices[0].y = this.linePoints[this.linePoints.length-1].y
+			this.linePool[i].vertices[0].z = this.linePoints[this.linePoints.length-1].z
 			// remove point from point array
-			this.linePoints.shift()
+			this.linePoints.pop()
+			
 
 			// move point to linePool
-			this.linePool[i].vertices[1].x = this.linePoints[0].x
-			this.linePool[i].vertices[1].y = this.linePoints[0].y
-			this.linePool[i].vertices[1].z = this.linePoints[0].z
+			this.linePool[i].vertices[1].x = this.linePoints[this.linePoints.length-1].x
+			this.linePool[i].vertices[1].y = this.linePoints[this.linePoints.length-1].y
+			this.linePool[i].vertices[1].z = this.linePoints[this.linePoints.length-1].z
 			// remove point from point array
-			this.linePoints.shift()
+			this.linePoints.pop()
 
 
 			// line is active
@@ -394,6 +395,8 @@ GameOfLife.updateLines = function() {
 			this.linePool[i].verticesNeedUpdate = true
 		}
 	}
+
+	this.linePoints = []
 }
 
 GameOfLife.resetLines = function() {
@@ -424,6 +427,8 @@ GameOfLife.resetLines = function() {
 		lineGeometry.vertices.push( point1, point2 )
 
 		line = new THREE.Line( lineGeometry, lineMaterial )
+
+		line.geometry.isActive = false
 
 		this.linePool.push(line.geometry)
 
