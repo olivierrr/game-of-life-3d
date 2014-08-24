@@ -25,9 +25,9 @@ GameOfLife.init = function() {
 
 	// THREE setup (rendered/scene/camera/fog/controls)
 	this.camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 3000 )
-	this.camera.position.z = 1000
+	this.camera.position.z = 1700
 	this.controls = new THREE.OrbitControls( this.camera )
-	this.controls.maxDistance = 5000
+	this.controls.maxDistance = 2500
 	this.scene = new THREE.Scene()
 	//this.scene.fog = new THREE.FogExp2( 0x000000, 0.0004 )
 	this.renderer = new THREE.WebGLRenderer()
@@ -345,25 +345,32 @@ GameOfLife.addParticle = function(inherits) {
 
 GameOfLife.updateLines = function() {
 
-	var i, points = this.linePoints
+	var i = this.linePool.length
 
-	//reset activeLine count
+	// reset count
 	this.activeLines = 0
 
-	for(i=0; i<this.linePool.length; i+=2) {
+	while(i--) {
 
-		if( points[i] && points[i+1] ) {
+		if(this.linePoints[i+1]) {
 
-			this.linePool[i].vertices[0].x = points[i].x
-			this.linePool[i].vertices[0].y = points[i].y
-			this.linePool[i].vertices[0].z = points[i].z
+			// move point to linePool
+			this.linePool[i].vertices[0].x = this.linePoints[0].x
+			this.linePool[i].vertices[0].y = this.linePoints[0].y
+			this.linePool[i].vertices[0].z = this.linePoints[0].z
+			// remove point from point array
+			this.linePoints.shift()
 
-			this.linePool[i].vertices[1].x = points[i+1].x
-			this.linePool[i].vertices[1].y = points[i+1].y
-			this.linePool[i].vertices[1].z = points[i+1].z
+			// move point to linePool
+			this.linePool[i].vertices[1].x = this.linePoints[0].x
+			this.linePool[i].vertices[1].y = this.linePoints[0].y
+			this.linePool[i].vertices[1].z = this.linePoints[0].z
+			// remove point from point array
+			this.linePoints.shift()
 
-			this.isActive = true
 
+			// line is active
+			this.linePool[i].isActive = true
 			this.activeLines += 1
 
 			// update vertices
@@ -372,21 +379,21 @@ GameOfLife.updateLines = function() {
 
 		else {
 
-			if(this.linePool[0].isActive === false) continue
+			// skip if line was inactive on last loop
+			if(this.linePool[i].isActive === false) continue
 
+
+			// put line away
 			this.linePool[i].vertices[0].set(5000, 5000, 5000)
 			this.linePool[i].vertices[1].set(5000, 5000, 5000)
 
-			this.isActive = false
+			// line is not active
+			this.linePool[i].isActive = false
 
 			// update vertices
 			this.linePool[i].verticesNeedUpdate = true
 		}
-
 	}
-
-	// clear line array for next loop
-	this.linePoints = []
 }
 
 GameOfLife.resetLines = function() {
